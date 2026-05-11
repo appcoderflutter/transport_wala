@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:transport_wala/utility/utility.dart';
 
 import '../resources/res.dart';
 import '../resources/text_styes/custome_text.dart';
+import '../routes/app_routes.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -139,11 +141,33 @@ class HomeDrawer extends StatelessWidget {
                 icon: Icons.supervised_user_circle_outlined,
 
                 title: "Drivers",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.driverPage,
+                  );
+                },
               ),
 
               SizedBox(height: 24.h),
 
-              _DrawerItem(icon: Icons.info_outline_rounded, title: "About Us"),
+              _DrawerItem(
+                icon: Icons.info_outline_rounded,
+
+                title: "About Us",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.aboutPage,
+                  );
+                },
+              ),
 
               SizedBox(height: 24.h),
 
@@ -151,6 +175,15 @@ class HomeDrawer extends StatelessWidget {
                 icon: Icons.gavel_rounded,
 
                 title: "Terms & Conditions",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.termsPage,
+                  );
+                },
               ),
 
               const Spacer(),
@@ -225,26 +258,48 @@ class _DrawerItem extends StatelessWidget {
 
   final String title;
 
-  const _DrawerItem({required this.icon, required this.title});
+  final VoidCallback? onTap;
+
+  const _DrawerItem({
+    required this.icon,
+
+    required this.title,
+
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 24.sp, color: Colors.black87),
 
-        SizedBox(width: 18.w),
+    return GestureDetector(
 
-        Text(
-          title,
+      onTap: onTap,
 
-          style: CustomTextTheme.semiBold(
+      child: Row(
+        children: [
+
+          Icon(
+            icon,
+
+            size: 24.sp,
+
             color: Colors.black87,
-
-            fontSize: 17.sp,
           ),
-        ),
-      ],
+
+          SizedBox(width: 18.w),
+
+          Text(
+            title,
+
+            style:
+            CustomTextTheme.semiBold(
+              color: Colors.black87,
+
+              fontSize: 17.sp,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
