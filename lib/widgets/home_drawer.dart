@@ -185,6 +185,40 @@ class HomeDrawer extends StatelessWidget {
                   );
                 },
               ),
+              SizedBox(height: 24.h),
+
+              _DrawerItem(
+                icon: Icons.privacy_tip_outlined,
+
+                title: "Privacy Policy",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.privacyPolicyPage,
+                  );
+                },
+              ),
+
+              SizedBox(height: 24.h),
+
+              _DrawerItem(
+                icon: Icons.contact_mail_outlined,
+
+                title: "Contact Us",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.contactUsPage,
+                  );
+                },
+              ),
+
 
               const Spacer(),
 

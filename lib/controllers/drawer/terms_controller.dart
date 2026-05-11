@@ -1,104 +1,55 @@
 import 'package:get/get.dart';
 
-class TermsController
-    extends GetxController {
+import '../../helpers/toaster.dart';
+import '../../model/terms_model.dart';
+import '../../network_call/apis/apis_endpoint.dart';
+import '../../network_call/dio_helper/dio_helper.dart';
 
-  /// =========================
-  /// TITLE
-  /// =========================
+class TermsController extends GetxController {
 
-  final title =
-      "Terms & Conditions".obs;
+  /// LOADING
+  RxBool isLoading = false.obs;
 
-  /// =========================
-  /// UPDATED DATE
-  /// =========================
-
-  final updatedDate =
-      "Updated on 12 June 2026".obs;
-
-  /// =========================
-  /// EXPANDED INDEX
-  /// -1 = NOTHING OPEN
-  /// =========================
-
-  final expandedIndex =
-      (-1).obs;
-
-  /// =========================
   /// TERMS DATA
-  /// API READY
-  /// =========================
+  Rxn<TermsData> termsData =
+  Rxn<TermsData>();
 
-  final RxList<Map<String, dynamic>>
-  termsList =
-      <Map<String, dynamic>>[
+  @override
+  void onInit() {
+    super.onInit();
+    getTermsConditions();
+  }
 
-        {
-          "title":
-          "Account Responsibility",
+  /// GET TERMS API
 
-          "description":
-          "Users are responsible for maintaining accurate account information and protecting login credentials securely.",
-        },
+  Future<void> getTermsConditions() async {
 
-        {
-          "title":
-          "Booking & Vehicle Usage",
+    isLoading.value = true;
 
-          "description":
-          "All transport activities must comply with transport and safety regulations imposed by local authorities.",
-        },
+    await DioHelper.builder()
 
-        {
-          "title":
-          "Data Privacy & Security",
+        .setMethod("GET")
 
-          "description":
-          "Your personal information and transport data remain encrypted and protected inside our platform.",
-        },
+        .setUrl(
+        ApiEndpoints.getTermsConditions)
 
-        {
-          "title":
-          "Cancellation Policy",
+        .execute<TermsModel>(
 
-          "description":
-          "Transport requests may be cancelled according to company policy and timing restrictions.",
-        },
+      fromJson: (json) =>
+          TermsModel.fromJson(json),
 
-        {
-          "title":
-          "Platform Limitations",
+      onSuccess: (response) {
 
-          "description":
-          "We are not responsible for delays caused by weather, strikes, traffic restrictions, or third-party failures.",
-        },
+        termsData.value =
+            response.termsData;
+      },
 
-        {
-          "title":
-          "Fraud & Misuse",
+      onFailure: (message, {code}) {
 
-          "description":
-          "Fraudulent activity, fake bookings, or misuse of the application can permanently suspend your account.",
-        },
+        AppToast.short(message);
+      },
+    );
 
-      ].obs;
-
-  /// =========================
-  /// TOGGLE CARD
-  /// =========================
-
-  void toggleCard(int index) {
-
-    if (expandedIndex.value == index) {
-
-      /// CLOSE
-      expandedIndex.value = -1;
-
-    } else {
-
-      /// OPEN
-      expandedIndex.value = index;
-    }
+    isLoading.value = false;
   }
 }

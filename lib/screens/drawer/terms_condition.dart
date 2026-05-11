@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -7,31 +8,20 @@ import '../../resources/mColours.dart';
 import '../../resources/text_styes/custome_text.dart';
 import '../../widgets/custom_appbar.dart';
 
-class TermsConditionPage
-    extends GetView<TermsController> {
-
-  const TermsConditionPage({
-    super.key,
-  });
+class TermsConditionPage extends GetView<TermsController> {
+  const TermsConditionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      backgroundColor:
-      MColors.white,
+      backgroundColor: MColors.white,
 
       appBar: CustomAppBar(
+        title: "Terms & Conditions",
 
-        title:
-        "Terms & Conditions",
+        backgroundColor: Colors.white,
 
-        backgroundColor:
-        Colors.white,
-
-        iconColor:
-        const Color(0xFF2F66F6),
+        iconColor: const Color(0xFF2F66F6),
 
         showBack: true,
 
@@ -41,72 +31,44 @@ class TermsConditionPage
       ),
 
       body: SafeArea(
-
         child: Column(
           children: [
-
             /// ====================
-            /// TOP PREMIUM HEADER
+            /// TOP HEADER
             /// ====================
-
             Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
 
-              margin:
-              EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(20.w),
 
-              padding:
-              EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
 
-              decoration:
-              BoxDecoration(
+                  end: Alignment.bottomRight,
 
-                gradient:
-                const LinearGradient(
-
-                  begin:
-                  Alignment.topLeft,
-
-                  end:
-                  Alignment.bottomRight,
-
-                  colors: [
-
-                    Color(0xFF2F66F6),
-
-                    Color(0xFF5A84FF),
-                  ],
+                  colors: [Color(0xFF2F66F6), Color(0xFF5A84FF)],
                 ),
 
-                borderRadius:
-                BorderRadius.circular(
-                    24.r),
+                borderRadius: BorderRadius.circular(24.r),
               ),
 
               child: Row(
                 children: [
-
                   Container(
-
                     width: 56.w,
                     height: 56.w,
 
-                    decoration:
-                    BoxDecoration(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
 
-                      color:
-                      Colors.white
-                          .withOpacity(
-                          0.15),
-
-                      shape:
-                      BoxShape.circle,
+                      shape: BoxShape.circle,
                     ),
 
                     child: Icon(
                       Icons.gavel_rounded,
 
-                      color:
-                      Colors.white,
+                      color: Colors.white,
 
                       size: 28.sp,
                     ),
@@ -115,156 +77,67 @@ class TermsConditionPage
                   SizedBox(width: 16.w),
 
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                    child: Obx(() {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                      children: [
+                        children: [
+                          Text(
+                            controller.termsData.value?.title ??
+                                "Terms & Conditions",
 
-                        Obx(
-                              () => Text(
-                            controller
-                                .title
-                                .value,
+                            style: CustomTextTheme.bold(
+                              color: Colors.white,
 
-                            style:
-                            CustomTextTheme.bold(
-                              color:
-                              Colors.white,
-
-                              fontSize:
-                              22.sp,
+                              fontSize: 22.sp,
                             ),
                           ),
-                        ),
 
-                        SizedBox(
-                            height: 4.h),
+                          SizedBox(height: 4.h),
 
-                        Obx(
-                              () => Text(
-                            controller
-                                .updatedDate
-                                .value,
+                          Text(
+                            "Please read carefully before using our platform.",
 
-                            style:
-                            CustomTextTheme.medium(
-                              color:
-                              Colors.white70,
+                            style: CustomTextTheme.medium(
+                              color: Colors.white70,
 
-                              fontSize:
-                              13.sp,
+                              fontSize: 13.sp,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
                   ),
                 ],
               ),
             ),
-
-            Padding(
-              padding:
-              EdgeInsets.symmetric(
-                horizontal: 16.w,
-              ),
-
-              child: Container(
-
-                padding:
-                EdgeInsets.all(14.w),
-
-                decoration:
-                BoxDecoration(
-
-                  color:
-                  const Color(0xFFEEF3FF),
-
-                  borderRadius:
-                  BorderRadius.circular(
-                      18.r),
-                ),
-
-                child: Row(
-                  children: [
-
-                    Icon(
-                      Icons
-                          .verified_user_rounded,
-
-                      color:
-                      const Color(0xFF2F66F6),
-
-                      size: 22.sp,
-                    ),
-
-                    SizedBox(width: 12.w),
-
-                    Expanded(
-                      child: Text(
-                        "Please read all terms carefully before using the platform.",
-
-                        style:
-                        CustomTextTheme.medium(
-                          color:
-                          Colors.black87,
-
-                          fontSize:
-                          13.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
             /// ====================
-            /// TERMS LIST
+            /// HTML CONTENT
             /// ====================
-
             Expanded(
+              child: Obx(() {
+                /// LOADING
 
-              child: ListView.builder(
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                physics:
-                const BouncingScrollPhysics(),
+                /// NULL
 
-                padding: EdgeInsets.only(
-                  left: 16.w,
-                  right: 16.w,
-                  bottom: 24.h,
-                  top: 16.h,
-                ),
+                if (controller.termsData.value == null) {
+                  return Center(
 
-                itemCount:
-                controller.termsList.length,
-
-                itemBuilder:
-                    (context, index) {
-
-                  return Obx(() {
-
-                    final item =
-                    controller
-                        .termsList[index];
-
-                    final isExpanded =
-                        controller
-                            .expandedIndex
-                            .value == index;
-
-                    return AnimatedContainer(
-
-                      duration:
-                      const Duration(
-                          milliseconds: 300),
+                    child: Container(
 
                       margin:
-                      EdgeInsets.only(
-                        bottom: 14.h,
+                      EdgeInsets.symmetric(
+                        horizontal: 30.w,
+                      ),
+
+                      padding:
+                      EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 28.h,
                       ),
 
                       decoration: BoxDecoration(
@@ -272,40 +145,17 @@ class TermsConditionPage
                         color: Colors.white,
 
                         borderRadius:
-                        BorderRadius.circular(
-                            24.r),
-
-                        border: Border.all(
-
-                          color: isExpanded
-
-                              ? const Color(
-                              0xFF2F66F6)
-
-                              : Colors.black12,
-
-                          width:
-                          isExpanded ? 1.5 : 1,
-                        ),
+                        BorderRadius.circular(28.r),
 
                         boxShadow: [
 
                           BoxShadow(
-                            color: isExpanded
 
-                                ? const Color(
-                                0xFF2F66F6)
-                                .withOpacity(
-                                0.10)
+                            color:
+                            Colors.black.withOpacity(
+                                0.06),
 
-                                : Colors.black
-                                .withOpacity(
-                                0.04),
-
-                            blurRadius:
-                            isExpanded
-                                ? 24
-                                : 12,
+                            blurRadius: 18,
 
                             offset:
                             const Offset(0, 8),
@@ -314,191 +164,142 @@ class TermsConditionPage
                       ),
 
                       child: Column(
+
+                        mainAxisSize:
+                        MainAxisSize.min,
+
                         children: [
 
-                          /// HEADER
-                          InkWell(
+                          Container(
 
-                            borderRadius:
-                            BorderRadius.circular(
-                                24.r),
+                            width: 72.w,
+                            height: 72.w,
 
-                            onTap: () {
+                            decoration:
+                            BoxDecoration(
 
-                              controller
-                                  .toggleCard(
-                                  index);
-                            },
+                              color:
+                              const Color(0xFFEEF3FF),
 
-                            child: Padding(
-                              padding:
-                              EdgeInsets.all(
-                                  18.w),
+                              shape:
+                              BoxShape.circle,
+                            ),
 
-                              child: Row(
-                                children: [
+                            child: Icon(
 
-                                  /// NUMBER
-                                  Container(
+                              Icons
+                                  .description_outlined,
 
-                                    width: 38.w,
-                                    height: 38.w,
+                              color:
+                              const Color(0xFF2F66F6),
 
-                                    decoration:
-                                    BoxDecoration(
-
-                                      gradient:
-                                      const LinearGradient(
-                                        colors: [
-
-                                          Color(
-                                              0xFF2F66F6),
-
-                                          Color(
-                                              0xFF5A84FF),
-                                        ],
-                                      ),
-
-                                      shape:
-                                      BoxShape.circle,
-                                    ),
-
-                                    child: Center(
-                                      child: Text(
-                                        "${index + 1}",
-
-                                        style:
-                                        CustomTextTheme.bold(
-                                          color:
-                                          Colors.white,
-
-                                          fontSize:
-                                          15.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                      width: 14.w),
-
-                                  /// TITLE
-                                  Expanded(
-                                    child: Text(
-                                      item["title"] ??
-                                          "",
-
-                                      style:
-                                      CustomTextTheme.bold(
-                                        color:
-                                        Colors.black,
-
-                                        fontSize:
-                                        16.sp,
-                                      ),
-                                    ),
-                                  ),
-
-                                  AnimatedRotation(
-
-                                    duration:
-                                    const Duration(
-                                        milliseconds:
-                                        300),
-
-                                    turns:
-                                    isExpanded
-                                        ? 0.5
-                                        : 0,
-
-                                    child: Icon(
-                                      Icons
-                                          .keyboard_arrow_down_rounded,
-
-                                      color:
-                                      const Color(
-                                          0xFF2F66F6),
-
-                                      size: 28.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              size: 34.sp,
                             ),
                           ),
 
-                          /// DESCRIPTION
-                          AnimatedCrossFade(
+                          SizedBox(height: 18.h),
 
-                            firstChild:
-                            const SizedBox(),
+                          Text(
 
-                            secondChild:
-                            Padding(
+                            "No Terms Available",
 
-                              padding:
-                              EdgeInsets.only(
-                                left: 18.w,
-                                right: 18.w,
-                                bottom: 20.h,
-                              ),
+                            style:
+                            CustomTextTheme.bold(
 
-                              child: Container(
+                              color:
+                              Colors.black87,
 
-                                width:
-                                double.infinity,
-
-                                padding:
-                                EdgeInsets.all(
-                                    16.w),
-
-                                decoration:
-                                BoxDecoration(
-
-                                  color:
-                                  const Color(
-                                      0xFFF7F9FF),
-
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      18.r),
-                                ),
-
-                                child: Text(
-                                  item["description"] ??
-                                      "",
-
-                                  style:
-                                  CustomTextTheme.medium(
-                                    color:
-                                    Colors.black87,
-
-                                    fontSize:
-                                    13.sp,
-                                  ),
-                                ),
-                              ),
+                              fontSize:
+                              18.sp,
                             ),
+                          ),
 
-                            crossFadeState:
-                            isExpanded
+                          SizedBox(height: 8.h),
 
-                                ? CrossFadeState
-                                .showSecond
+                          Text(
 
-                                : CrossFadeState
-                                .showFirst,
+                            "Terms & conditions are currently unavailable. Please try again later.",
 
-                            duration:
-                            const Duration(
-                                milliseconds: 300),
+                            textAlign:
+                            TextAlign.center,
+
+                            style:
+                            CustomTextTheme.medium(
+
+                              color:
+                              Colors.black54,
+
+                              fontSize:
+                              13.sp,
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  });
-                },
-              ),
+                    ),
+                  );
+                }
+
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+
+                  padding: EdgeInsets.fromLTRB(
+                    16.w,
+                    10.h,
+                    16.w,
+                    16.h,
+                  ),
+
+                  child: Container(
+                    width: double.infinity,
+
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+
+                      borderRadius: BorderRadius.circular(24.r),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+
+                          blurRadius: 14,
+
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+
+                    child: Html(
+                      data: controller.termsData.value?.termsConditions ?? "",
+
+                      style: {
+                        "body": Style(
+                          margin: Margins.zero,
+
+                          padding: HtmlPaddings.zero,
+
+                          fontSize: FontSize(16.sp),
+
+                          color: Colors.black87,
+
+                          lineHeight: const LineHeight(1.7),
+                        ),
+
+                        "p": Style(margin: Margins.only(bottom: 14)),
+
+                        "a": Style(
+                          color: const Color(0xFF2F66F6),
+
+                          textDecoration: TextDecoration.none,
+                        ),
+
+                        "span": Style(fontWeight: FontWeight.w600),
+                      },
+                    ),
+                  ),
+                );
+              }),
             ),
           ],
         ),

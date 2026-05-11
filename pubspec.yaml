@@ -71,7 +71,7 @@ dependencies:
   # wakelock_plus: ^1.5.1
   # just_audio: ^0.9.36
   path_provider: any
-  # flutter_html: ^3.0.0
+  flutter_html: ^3.0.0
 
 dev_dependencies:
   flutter_test:

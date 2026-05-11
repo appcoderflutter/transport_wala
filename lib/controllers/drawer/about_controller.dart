@@ -1,11 +1,18 @@
 import 'package:get/get.dart';
 
+import '../../helpers/toaster.dart';
+import '../../model/aboutUs_model.dart';
+import '../../network_call/apis/apis_endpoint.dart';
+import '../../network_call/dio_helper/dio_helper.dart';
+
 class AboutController
     extends GetxController {
 
-  /// =========================
+  /// LOADING
+
+  RxBool isLoading = false.obs;
+
   /// APP INFO
-  /// =========================
 
   final appName =
       "Transport Wala".obs;
@@ -14,75 +21,53 @@ class AboutController
       "Smart logistics for modern transport business."
           .obs;
 
-  final description =
-      "Transport Wala helps transport owners manage vehicles, drivers, bookings, and logistics operations with a seamless digital experience."
-          .obs;
+  /// ABOUT DATA
+
+  Rxn<AboutData> aboutData =
+  Rxn<AboutData>();
+
+  @override
+  void onInit() {
+
+    super.onInit();
+
+    getAboutUs();
+  }
 
   /// =========================
-  /// STATS
+  /// GET ABOUT API
   /// =========================
 
-  final totalVehicles =
-      "1200+".obs;
+  Future<void> getAboutUs()
+  async {
 
-  final activeDrivers =
-      "850+".obs;
+    isLoading.value = true;
 
-  final completedTrips =
-      "15K+".obs;
+    await DioHelper.builder()
 
-  /// =========================
-  /// FEATURES
-  /// API READY
-  /// =========================
+        .setMethod("GET")
 
-  final RxList<Map<String, dynamic>>
-  features =
-      <Map<String, dynamic>>[
+        .setUrl(
+        ApiEndpoints.getAboutUs)
 
-        {
-          "title":
-          "Smart Vehicle Management",
+        .execute<AboutModel>(
 
-          "description":
-          "Track and manage all transport vehicles in one premium dashboard.",
+      fromJson: (json) =>
+          AboutModel.fromJson(json),
 
-          "icon":
-          "local_shipping",
-        },
+      onSuccess: (response) {
 
-        {
-          "title":
-          "Real-time Booking",
+        aboutData.value =
+            response.aboutData;
+      },
 
-          "description":
-          "Manage transport requests and lane activities instantly.",
+      onFailure:
+          (message, {code}) {
 
-          "icon":
-          "location_on",
-        },
+        AppToast.short(message);
+      },
+    );
 
-        {
-          "title":
-          "Secure & Reliable",
-
-          "description":
-          "Advanced security and protected transport operations.",
-
-          "icon":
-          "verified_user",
-        },
-
-        {
-          "title":
-          "Driver Management",
-
-          "description":
-          "Manage drivers, trips, and activities efficiently.",
-
-          "icon":
-          "supervised_user_circle",
-        },
-
-      ].obs;
+    isLoading.value = false;
+  }
 }

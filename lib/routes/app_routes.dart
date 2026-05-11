@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 
 import '../bindings/auth/register_binding.dart';
 import '../bindings/drawer/about_binding.dart';
+import '../bindings/drawer/contact_us_binding.dart';
 import '../bindings/drawer/driver_binding.dart';
+import '../bindings/drawer/privacy_policy_binding.dart';
 import '../bindings/drawer/terms_binding.dart';
 import '../bindings/home/home_binding.dart';
 import '../bindings/home/notification_binding.dart';
@@ -11,7 +13,9 @@ import '../bindings/home/vehicle_details_binding.dart';
 import '../bindings/onboarding/onboarding_binding.dart';
 import '../screens/auth/register.dart';
 import '../screens/drawer/about.dart';
+import '../screens/drawer/contact_us.dart';
 import '../screens/drawer/driver.dart';
+import '../screens/drawer/privacy_policy.dart';
 import '../screens/drawer/terms_condition.dart';
 import '../screens/home/home.dart';
 import '../screens/home/notification.dart';
@@ -34,6 +38,8 @@ class AppRoutes {
   static const termsPage = '/terms-condition';
   static const aboutPage = '/about-us';
   static const driverPage = '/driver';
+  static const privacyPolicyPage = '/privacy-policy';
+  static const contactUsPage = '/contact-us';
   static const otpPage = '/otp';
 
   static GetPage _getPage(
@@ -53,6 +59,8 @@ class AppRoutes {
     _getPage(termsPage, const TermsConditionPage(), binding: TermsBinding()),
     _getPage(aboutPage, const AboutUsPage(), binding: AboutBinding()),
     _getPage(driverPage, const DriverPage(), binding: DriverBinding()),
+    _getPage(privacyPolicyPage, const PrivacyPolicyPage(), binding: PrivacyPolicyBinding()),
+    _getPage(contactUsPage, const ContactUsPage(), binding: ContactUsBinding()),
 
 
   ];
