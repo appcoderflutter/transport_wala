@@ -17,7 +17,6 @@ class RegisterPage extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -25,14 +24,10 @@ class RegisterPage extends GetView<RegisterController> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-
-          keyboardDismissBehavior:
-          ScrollViewKeyboardDismissBehavior.onDrag,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
 
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: Get.height,
-            ),
+            constraints: BoxConstraints(minHeight: Get.height),
 
             child: Padding(
               padding: EdgeInsets.only(
@@ -40,20 +35,17 @@ class RegisterPage extends GetView<RegisterController> {
                 right: 26.w,
 
                 /// KEYBOARD SPACE
-                bottom:
-                MediaQuery.of(context).viewInsets.bottom + 20.h,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
               ),
 
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-
                     /// APPBAR
                     SizedBox(height: 10.h),
 
                     Row(
                       children: [
-
                         GestureDetector(
                           onTap: () => Get.back(),
 
@@ -111,13 +103,11 @@ class RegisterPage extends GetView<RegisterController> {
 
                     /// DROPDOWN
                     Obx(
-                          () => Container(
+                      () => Container(
                         height: 52.h,
                         width: double.infinity,
 
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
 
                         decoration: BoxDecoration(
                           color: const Color(0xFFF3F3F3),
@@ -125,7 +115,6 @@ class RegisterPage extends GetView<RegisterController> {
                         ),
 
                         child: DropdownButton<String>(
-
                           value: controller.selectedRole.value,
 
                           isExpanded: true,
@@ -153,8 +142,6 @@ class RegisterPage extends GetView<RegisterController> {
                           ),
 
                           items: const [
-
-
                             DropdownMenuItem(
                               value: "Vehicle Owner",
                               child: Text("Vehicle Owner"),
@@ -167,7 +154,6 @@ class RegisterPage extends GetView<RegisterController> {
                           ],
 
                           onChanged: (value) {
-
                             if (value != null) {
                               controller.changeRole(value);
                             }
@@ -187,17 +173,13 @@ class RegisterPage extends GetView<RegisterController> {
                         height: 58.h,
 
                         decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.circular(10.r),
+                          borderRadius: BorderRadius.circular(10.r),
 
                           gradient: const LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
 
-                            colors: [
-                              Color(0xFF2F66F6),
-                              Color(0xFF001A9F),
-                            ],
+                            colors: [Color(0xFF2F66F6), Color(0xFF001A9F)],
                           ),
                         ),
 
@@ -218,11 +200,9 @@ class RegisterPage extends GetView<RegisterController> {
 
                     /// LOGIN
                     Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
 
                       children: [
-
                         Text(
                           "Already have a account ? ",
 
@@ -240,8 +220,7 @@ class RegisterPage extends GetView<RegisterController> {
 
                             style: CustomTextTheme.bold(
                               fontSize: 14.sp,
-                              color:
-                              const Color(0xFF2F66F6),
+                              color: const Color(0xFF2F66F6),
                             ),
                           ),
                         ),

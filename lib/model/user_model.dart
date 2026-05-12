@@ -5,6 +5,8 @@ class UserModel {
   final String? email;
   final String? isdCode;
   final String? phone;
+  final String? userType;
+  final String? profilePic;
   final int? diamondBalance;
   final String? gender;
   final String? birthday;
@@ -22,10 +24,10 @@ class UserModel {
   final String? charmLevel  ;
   final int? charmXp;
   final String? charmLevelAnimation  ;
-  final String? garageAnimationFile  ;
-  final String? garageSoundFile  ;
-  final String? frameAnimationFile  ;
-  final String? luckyId  ;
+  // final String? garageAnimationFile; // commented out (unused)
+  // final String? garageSoundFile; // commented out (unused)
+  // final String? frameAnimationFile; // commented out (unused)
+  // final String? luckyId; // commented out (unused)
   final bool? isVideoOn;
   final bool? isMicOn;
 
@@ -38,6 +40,8 @@ class UserModel {
     this.email,
     this.isdCode,
     this.phone,
+    this.userType,
+    this.profilePic,
     this.diamondBalance,
     this.gender,
     this.birthday,
@@ -55,10 +59,10 @@ class UserModel {
     this.charmLevel,
     this.charmXp,
     this.charmLevelAnimation,
-    this.garageAnimationFile,
-    this.garageSoundFile,
-    this.frameAnimationFile,
-    this.luckyId,
+    // this.garageAnimationFile, // commented out (unused)
+    // this.garageSoundFile, // commented out (unused)
+    // this.frameAnimationFile, // commented out (unused)
+    // this.luckyId, // commented out (unused)
     this.isVideoOn,
     this.isMicOn,
     this.lastLiveActivity,
@@ -76,6 +80,8 @@ class UserModel {
       email: json['email'] as String?,
       isdCode: json['isdCode'] as String?,
       phone: json['phone'] as String?,
+      userType: json['userType'] as String?,
+      profilePic: json['profilePic'] as String?,
       diamondBalance:
           json['diamondBalance'] is int ? json['diamondBalance'] as int : null,
       gender: json['gender'] as String?,
@@ -94,10 +100,10 @@ class UserModel {
       charmLevel: json['charmLevel'] as String?,
       charmXp: json['charmXp'] is int ? json['charmXp'] as int : null,
       charmLevelAnimation: json['charmLevelAnimation'] as String?,
-      garageAnimationFile: json['garageAnimationFile'] as String?,
-      garageSoundFile: json['garageSoundFile'] as String?,
-      frameAnimationFile: json['frameAnimationFile'] as String?,
-      luckyId: json['luckyId'] as String?,
+      // garageAnimationFile: json['garageAnimationFile'] as String?, // commented out (unused)
+      // garageSoundFile: json['garageSoundFile'] as String?, // commented out (unused)
+      // frameAnimationFile: json['frameAnimationFile'] as String?, // commented out (unused)
+      // luckyId: json['luckyId'] as String?, // commented out (unused)
       isVideoOn: json['isVideoOn'] as bool?,
       isMicOn: json['isMicOn'] as bool?,
       lastLiveActivity: json['lastLiveActivity'] != null
@@ -114,6 +120,8 @@ class UserModel {
       'email': email,
       'isdCode': isdCode,
       'phone': phone,
+      'userType': userType,
+      'profilePic': profilePic,
       'diamondBalance': diamondBalance,
       'gender': gender,
       'birthday': birthday,
@@ -131,10 +139,10 @@ class UserModel {
       'charmLevel': charmLevel,
       'charmXp': charmXp,
       'charmLevelAnimation': charmLevelAnimation,
-      'garageAnimationFile': garageAnimationFile,
-      'garageSoundFile': garageSoundFile,
-      'frameAnimationFile': frameAnimationFile,
-      'luckyId': luckyId,
+      // 'garageAnimationFile': garageAnimationFile, // commented out (unused)
+      // 'garageSoundFile': garageSoundFile, // commented out (unused)
+      // 'frameAnimationFile': frameAnimationFile, // commented out (unused)
+      // 'luckyId': luckyId, // commented out (unused)
       'isVideoOn': isVideoOn,
       'isMicOn': isMicOn,
       'lastLiveActivity': lastLiveActivity?.toJson(),
@@ -148,6 +156,8 @@ class UserModel {
     String? email,
     String? isdCode,
     String? phone,
+    String? userType,
+    String? profilePic,
     int? diamondBalance,
     String? gender,
     String? birthday,
@@ -176,6 +186,8 @@ class UserModel {
       email: email ?? this.email,
       isdCode: isdCode ?? this.isdCode,
       phone: phone ?? this.phone,
+      userType: userType ?? this.userType,
+      profilePic: profilePic ?? this.profilePic,
       diamondBalance: diamondBalance ?? this.diamondBalance,
       gender: gender ?? this.gender,
       birthday: birthday ?? this.birthday,

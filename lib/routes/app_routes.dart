@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import '../bindings/auth/login_binding.dart';
+import '../bindings/auth/otp_binding.dart';
 import '../bindings/auth/register_binding.dart';
 import '../bindings/drawer/about_binding.dart';
 import '../bindings/drawer/contact_us_binding.dart';
@@ -11,6 +13,8 @@ import '../bindings/home/home_binding.dart';
 import '../bindings/home/notification_binding.dart';
 import '../bindings/home/vehicle_details_binding.dart';
 import '../bindings/onboarding/onboarding_binding.dart';
+import '../screens/auth/login.dart';
+import '../screens/auth/otp.dart';
 import '../screens/auth/register.dart';
 import '../screens/drawer/about.dart';
 import '../screens/drawer/contact_us.dart';
@@ -52,7 +56,10 @@ class AppRoutes {
   static List<GetPage> routes = [
     _getPage(splash, const SplashPage()),
     _getPage(onboarding, const OnboardingPage(), binding: OnboardingBinding()),
+    _getPage(loginPage, const LoginPage(), binding: LoginBinding(),
+    ),
     _getPage(registerPage, const RegisterPage(), binding: RegisterBinding()),
+    _getPage(otpPage, const OtpPage(), binding: OtpBinding()),
     _getPage(homePage, const HomePage(), binding: HomeBinding()),
     _getPage(vehicleDetailsPage, const VehicleDetailsPage(), binding: VehicleDetailsBinding()),
     _getPage(notificationPage, const NotificationPage(), binding: NotificationBinding()),

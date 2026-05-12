@@ -17,6 +17,8 @@ class Prefs {
   static const String _token = 'token';
   static const String _isLogin = 'isLogin';
   static const String _isLoginProvider = 'isLoginProvider';
+  static const String _seenOnboarding = 'seenOnboarding';
+
 
   // ------------------ REACTIVE USER ------------------
   static Rx<UserModel?> userRx = Rx<UserModel?>(getUserData());
@@ -32,6 +34,23 @@ class Prefs {
         userRx.value = UserModel.fromJson(jsonDecode(value));
       }
     });
+  }
+
+  /// ------------------ ONBOARDING --------------------
+
+  static void setSeenOnboarding(
+      bool value) {
+
+    _store().write(
+      _seenOnboarding,
+      value,
+    );
+  }
+
+  static bool getSeenOnboarding() {
+
+    return _store().read(
+        _seenOnboarding) ?? false;
   }
 
   // ------------------ USER DATA ----------------------

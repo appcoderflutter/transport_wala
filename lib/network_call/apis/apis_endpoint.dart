@@ -3,7 +3,12 @@ class ApiEndpoints {
       'https://intelligentappsolutionsdemo.com/current-project/website/TransportApp/public/api/';
 
   ///////////////////////////////// Auth ///////////////////////////////////
-
+  static final String registerSendOtp = '${baseUrl}auth/registerSendOTP';
+  static final String register = '${baseUrl}auth/register';
+  static final String login = '${baseUrl}auth/login';
+  static final String loginSendOTP = '${baseUrl}auth/loginSendOTP';
+  static final String getProfile = '${baseUrl}getProfile';
+  static final String logout = '${baseUrl}auth/logout';
 
 
   ///////////////////////////////// Profile ///////////////////////////////////

@@ -72,6 +72,7 @@ dependencies:
   # just_audio: ^0.9.36
   path_provider: any
   flutter_html: ^3.0.0
+  pinput: ^6.0.2
 
 dev_dependencies:
   flutter_test:

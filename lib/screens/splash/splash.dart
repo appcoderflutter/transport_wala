@@ -4,6 +4,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:transport_wala/utility/utility.dart';
 import 'package:get/get.dart';
 
+import '../../model/profile_model.dart';
+import '../../network_call/apis/apis_endpoint.dart';
+import '../../network_call/dio_helper/dio_helper.dart';
+import '../../prefs/prefs.dart';
 import '../../resources/mColours.dart';
 import '../../resources/res.dart';
 import '../../resources/text_styes/custome_text.dart';
@@ -23,28 +27,101 @@ class SplashPage extends StatelessWidget {
   }
 
   static void startNavigation() async {
+
     if (_navigated) return;
 
     _navigated = true;
 
     await Future.delayed(
-      const Duration(milliseconds: Consts.splashDelay),
+
+      const Duration(
+        milliseconds:
+        Consts.splashDelay,
+      ),
     );
 
-    Get.offAllNamed(AppRoutes.onboarding);
+    /// ONBOARDING CHECK
 
-    // ========= FUTURE READY =========
+    final seenOnboarding =
+    Prefs.getSeenOnboarding();
 
-    // bool seenOnboarding = Prefs.getSeenOnboarding();
-    // bool isLoggedIn = Prefs.isLoggedIn();
-    //
-    // if (!seenOnboarding) {
-    //   Get.offAllNamed(AppRoutes.onboarding);
-    // } else if (isLoggedIn) {
-    //   Get.offAllNamed(AppRoutes.bottomNav);
-    // } else {
-    //   Get.offAllNamed(AppRoutes.login);
-    // }
+    if (!seenOnboarding) {
+
+      Get.offAllNamed(
+        AppRoutes.onboarding,
+      );
+
+      return;
+    }
+
+    /// TOKEN
+
+    final token =
+    Prefs.getToken();
+
+    /// NO TOKEN
+
+    if (token == null ||
+        token.isEmpty) {
+
+      Get.offAllNamed(
+        AppRoutes.loginPage,
+      );
+
+      return;
+    }
+
+    try {
+
+      await DioHelper.builder()
+
+          .setMethod("GET")
+
+          .setUrl(
+          ApiEndpoints.getProfile)
+
+          .execute<ProfileModel>(
+
+        fromJson: (json) =>
+            ProfileModel
+                .fromJson(json),
+
+        onSuccess: (response) {
+
+          /// VALID USER
+
+          Get.offAllNamed(
+            AppRoutes.homePage,
+          );
+        },
+
+        onFailure:
+            (message, {code}) {
+
+          /// TOKEN EXPIRED
+
+          Prefs.setIsLogin(false);
+
+          Prefs.setToken("");
+
+          Get.offAllNamed(
+            AppRoutes.loginPage,
+          );
+        },
+      );
+
+    } catch (e) {
+
+      /// ERROR
+
+      Prefs.setIsLogin(false);
+
+      Prefs.setToken("");
+
+      Get.offAllNamed(
+        AppRoutes.loginPage,
+      );
+    }
   }
 
   @override
