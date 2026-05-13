@@ -1,135 +1,52 @@
 import 'package:get/get.dart';
 
-class NotificationController
-    extends GetxController {
+import '../../helpers/toaster.dart';
+import '../../model/notification_model.dart';
+import '../../network_call/apis/apis_endpoint.dart';
+import '../../network_call/dio_helper/dio_helper.dart';
 
-  /// DUMMY DATA
-  final notifications =
-      <Map<String, dynamic>>[
+class NotificationController extends GetxController {
 
-        {
-          "title":
-          "New Load Request",
+  /// LOADING
+  RxBool isLoading = false.obs;
 
-          "message":
-          "A new transport request has been assigned to your truck.",
+  /// NOTIFICATION LIST
+  RxList<NotificationItem> notifications = <NotificationItem>[].obs;
 
-          "time":
-          "2 min ago",
+  @override
+  void onInit() {
+    super.onInit();
 
-          "icon":
-          "load",
-        },
+    getNotifications();
+  }
 
-        {
-          "title":
-          "Payment Received",
+  /// =========================
+  /// GET NOTIFICATIONS
+  /// =========================
 
-          "message":
-          "Payment of ₹25,000 has been successfully credited.",
+  Future<void> getNotifications() async {
+    try {
+      isLoading.value = true;
 
-          "time":
-          "10 min ago",
+      await DioHelper.builder()
+          .setMethod("GET")
+          .setUrl(ApiEndpoints.getNotificationList)
+          .execute<NotificationModel>(
+            fromJson: (json) => NotificationModel.fromJson(json),
 
-          "icon":
-          "payment",
-        },
+            onSuccess: (response) {
+              notifications.value =
+                  response.payload?.notificationList?.data ?? [];
+            },
 
-        {
-          "title":
-          "Truck Approved",
-
-          "message":
-          "Your newly added truck has been verified successfully.",
-
-          "time":
-          "1 hour ago",
-
-          "icon":
-          "success",
-        },
-        {
-          "title":
-          "New Load Request",
-
-          "message":
-          "A new transport request has been assigned to your truck.",
-
-          "time":
-          "2 min ago",
-
-          "icon":
-          "load",
-        },
-
-        {
-          "title":
-          "Payment Received",
-
-          "message":
-          "Payment of ₹25,000 has been successfully credited.",
-
-          "time":
-          "10 min ago",
-
-          "icon":
-          "payment",
-        },
-
-        {
-          "title":
-          "Truck Approved",
-
-          "message":
-          "Your newly added truck has been verified successfully.",
-
-          "time":
-          "1 hour ago",
-
-          "icon":
-          "success",
-        },
-        {
-          "title":
-          "New Load Request",
-
-          "message":
-          "A new transport request has been assigned to your truck.",
-
-          "time":
-          "2 min ago",
-
-          "icon":
-          "load",
-        },
-
-        {
-          "title":
-          "Payment Received",
-
-          "message":
-          "Payment of ₹25,000 has been successfully credited.",
-
-          "time":
-          "10 min ago",
-
-          "icon":
-          "payment",
-        },
-
-        {
-          "title":
-          "Truck Approved",
-
-          "message":
-          "Your newly added truck has been verified successfully.",
-
-          "time":
-          "1 hour ago",
-
-          "icon":
-          "success",
-        },
-
-      ].obs;
+            onFailure: (message, {code}) {
+              AppToast.short(message);
+            },
+          );
+    } catch (e) {
+      AppToast.short("Failed to load notifications");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -128,7 +128,14 @@ class HomeDrawer extends StatelessWidget {
                       ),
 
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+
+                          Get.back();
+
+                          Get.toNamed(
+                            AppRoutes.myProfilePage,
+                          );
+                        },
                         child: Container(
                           width: 24.w,
                           height: 24.w,

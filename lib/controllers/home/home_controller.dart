@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../model/notification_count_model.dart';
+import '../../network_call/apis/apis_endpoint.dart';
+import '../../network_call/dio_helper/dio_helper.dart';
 import '../../resources/text_styes/custome_text.dart';
 import '../../utility/utility.dart';
 
@@ -13,9 +16,13 @@ class HomeController extends GetxController {
 
   final ownerName = "Owner".obs;
 
-  final activeLanes = 5.obs;
+  final activeLanes = 15.obs;
 
-  final loadRequests = 4.obs;
+  final loadRequests = 14.obs;
+
+  /// NOTIFICATION COUNT
+
+  RxInt notificationCount = 0.obs;
 
   /// =========================
   /// VEHICLE LIST
@@ -277,5 +284,59 @@ class HomeController extends GetxController {
     );
 
     return result ?? false;
+  }
+
+  /// =========================
+  /// GET NOTIFICATION COUNT
+  /// =========================
+
+  Future<void>
+  getNotificationCount() async {
+
+    try {
+
+      await DioHelper.builder()
+
+          .setMethod("GET")
+
+          .setUrl(
+          ApiEndpoints
+              .getNotificationCount)
+
+          .execute<NotificationCountModel>(
+
+        fromJson: (json) =>
+
+            NotificationCountModel
+                .fromJson(json),
+
+        onSuccess: (response) {
+
+          notificationCount.value =
+
+              response
+                  .payload
+                  ?.count ?? 0;
+        },
+
+        onFailure:
+            (message, {code}) {
+
+          notificationCount.value = 0;
+        },
+      );
+
+    } catch (e) {
+
+      notificationCount.value = 0;
+    }
+  }
+
+  @override
+  void onInit() {
+
+    super.onInit();
+
+    getNotificationCount();
   }
 }

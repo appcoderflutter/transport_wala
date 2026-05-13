@@ -5,9 +5,7 @@ import 'package:get/get.dart';
 import '../../resources/mColours.dart';
 import '../../resources/text_styes/custome_text.dart';
 
-class CustomAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// TITLE
   final String? title;
 
@@ -41,6 +39,10 @@ class CustomAppBar extends StatelessWidget
   /// CUSTOM ICON COLOR
   final Color? iconColor;
 
+  /// NOTIFICATION COUNT
+
+  final int notificationCount;
+
   const CustomAppBar({
     super.key,
     this.title,
@@ -54,15 +56,13 @@ class CustomAppBar extends StatelessWidget
     this.backgroundColor,
     this.titleColor,
     this.iconColor,
+    this.notificationCount = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return AppBar(
-
-      backgroundColor:
-      backgroundColor ?? MColors.white,
+      backgroundColor: backgroundColor ?? MColors.white,
 
       elevation: 0,
 
@@ -77,119 +77,98 @@ class CustomAppBar extends StatelessWidget
       /// =========================
       /// LEADING
       /// =========================
-
       leadingWidth: 65.w,
 
       leading:
-
-      /// BACK BUTTON
-      showBack
-
+          /// BACK BUTTON
+          showBack
           ? Padding(
-        padding: EdgeInsets.only(
-          left: 16.w,
-        ),
+              padding: EdgeInsets.only(left: 16.w),
 
-        child: GestureDetector(
-          onTap: () {
+              child: GestureDetector(
+                onTap: () {
+                  if (onBack != null) {
+                    onBack!.call();
 
-            if (onBack != null) {
+                    return;
+                  }
 
-              onBack!.call();
+                  Get.back();
+                },
 
-              return;
-            }
+                child: Align(
+                  alignment: Alignment.centerLeft,
 
-            Get.back();
-          },
+                  child: Container(
+                    width: 38.w,
+                    height: 38.w,
 
-          child: Align(
-            alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
 
-            child: Container(
-              width: 38.w,
-              height: 38.w,
+                      color: Colors.black.withOpacity(0.05),
+                    ),
 
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                    child: Icon(
+                      Icons.arrow_back,
 
-                color:
-                Colors.black.withOpacity(0.05),
+                      size: 24.w,
+
+                      color: iconColor ?? MColors.black,
+                    ),
+                  ),
+                ),
               ),
-
-              child: Icon(
-                Icons.arrow_back,
-
-                size: 24.w,
-
-                color:
-                iconColor ?? MColors.black,
-              ),
-            ),
-          ),
-        ),
-      )
-
-      /// DRAWER BUTTON
+            )
+          /// DRAWER BUTTON
           : showDrawer
-
           ? Padding(
-        padding: EdgeInsets.only(
-          left: 16.w,
-        ),
+              padding: EdgeInsets.only(left: 16.w),
 
-        child: GestureDetector(
-          onTap: onDrawer,
+              child: GestureDetector(
+                onTap: onDrawer,
 
-          child: Align(
-            alignment: Alignment.centerLeft,
+                child: Align(
+                  alignment: Alignment.centerLeft,
 
-            child: Icon(
-              Icons.menu_rounded,
+                  child: Icon(
+                    Icons.menu_rounded,
 
-              size: 30.w,
+                    size: 30.w,
 
-              color:
-              iconColor ?? MColors.black,
-            ),
-          ),
-        ),
-      )
-
+                    color: iconColor ?? MColors.black,
+                  ),
+                ),
+              ),
+            )
           : const SizedBox(),
 
       /// =========================
       /// TITLE
       /// =========================
-
       title: title != null
-
           ? Text(
-        title!,
+              title!,
 
-        maxLines: 1,
+              maxLines: 1,
 
-        overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.ellipsis,
 
-        style: CustomTextTheme.bold(
-          color:
-          titleColor ?? const Color(0xFF082544),
+              style: CustomTextTheme.bold(
+                color: titleColor ?? const Color(0xFF082544),
 
-          fontSize: 20.sp,
-        ),
-      )
-
+                fontSize: 20.sp,
+              ),
+            )
           : null,
 
       /// =========================
       /// ACTIONS
       /// =========================
-
       actions: [
-
         /// NOTIFICATION
+        /// COUNT BADGE
         if (showNotification)
-
           GestureDetector(
             onTap: onNotification,
 
@@ -201,37 +180,55 @@ class CustomAppBar extends StatelessWidget
                 clipBehavior: Clip.none,
 
                 children: [
-
+                  /// ICON
                   Center(
                     child: Icon(
                       Icons.notifications_none_rounded,
 
                       size: 28.w,
 
-                      color:
-                      iconColor ?? MColors.black,
+                      color: iconColor ?? MColors.black,
                     ),
                   ),
 
-                  /// DOT
+                  /// BADGE
                   if (hasNotification)
-
                     Positioned(
-                      top: 11.h,
-                      right: 10.w,
+                      top: 6.h,
+                      right: 2.w,
 
                       child: Container(
-                        width: 10.w,
-                        height: 10.w,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
 
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: Colors.red,
 
-                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(30.r),
 
-                          border: Border.all(
-                            color: MColors.white,
-                            width: 1.5,
+                          border: Border.all(color: MColors.white, width: 1.5),
+                        ),
+
+                        constraints: BoxConstraints(
+                          minWidth: 18.w,
+                          minHeight: 18.h,
+                        ),
+
+                        child: Center(
+                          child: Text(
+                            notificationCount > 99
+                                ? "99+"
+                                : notificationCount.toString(),
+
+                            style: TextStyle(
+                              color: Colors.white,
+
+                              fontSize: 9.sp,
+
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
@@ -247,6 +244,5 @@ class CustomAppBar extends StatelessWidget
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(65.h);
+  Size get preferredSize => Size.fromHeight(65.h);
 }

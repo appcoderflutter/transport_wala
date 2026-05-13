@@ -5,6 +5,7 @@ import 'package:transport_wala/utility/utility.dart';
 import 'package:get/get.dart';
 
 import '../../model/profile_model.dart';
+import '../../model/user_model.dart';
 import '../../network_call/apis/apis_endpoint.dart';
 import '../../network_call/dio_helper/dio_helper.dart';
 import '../../prefs/prefs.dart';
@@ -88,7 +89,69 @@ class SplashPage extends StatelessWidget {
 
         onSuccess: (response) {
 
-          /// VALID USER
+          final user =
+              response.payload?.user;
+
+          /// SAVE USER DATA
+
+          if (user != null) {
+
+            Prefs.setUserData(
+
+              UserModel(
+
+                userId:
+                user.userId,
+
+                uniqueUserId:
+                user.uniqueUserId,
+
+                userType:
+                user.userType,
+
+                name:
+                user.name,
+
+                email:
+                user.email,
+
+                isEmailVerified:
+                user.isEmailVerified,
+
+                isdCode:
+                user.isdCode,
+
+                phone:
+                user.phone,
+
+                isPhoneVerified:
+                user.isPhoneVerified,
+
+                profilePic:
+                user.profilePic,
+
+                userActiveRoutes:
+                user.userActiveRoutes,
+
+                userActiveVehicles:
+                user.userActiveVehicles,
+
+                isKycVerified:
+                user.isKycVerified,
+
+                paymentTerm:
+                user.paymentTerm,
+
+                avgRating:
+                user.avgRating,
+
+                kycData:
+                user.kycData,
+              ),
+            );
+          }
+
+          /// HOME
 
           Get.offAllNamed(
             AppRoutes.homePage,

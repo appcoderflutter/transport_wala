@@ -7,8 +7,10 @@ import '../bindings/auth/register_binding.dart';
 import '../bindings/drawer/about_binding.dart';
 import '../bindings/drawer/contact_us_binding.dart';
 import '../bindings/drawer/driver_binding.dart';
+import '../bindings/drawer/my_profile_binding.dart';
 import '../bindings/drawer/privacy_policy_binding.dart';
 import '../bindings/drawer/terms_binding.dart';
+import '../bindings/home/add_vehicle_binding.dart';
 import '../bindings/home/home_binding.dart';
 import '../bindings/home/notification_binding.dart';
 import '../bindings/home/vehicle_details_binding.dart';
@@ -19,8 +21,10 @@ import '../screens/auth/register.dart';
 import '../screens/drawer/about.dart';
 import '../screens/drawer/contact_us.dart';
 import '../screens/drawer/driver.dart';
+import '../screens/drawer/my_profile.dart';
 import '../screens/drawer/privacy_policy.dart';
 import '../screens/drawer/terms_condition.dart';
+import '../screens/home/add_vehicle.dart';
 import '../screens/home/home.dart';
 import '../screens/home/notification.dart';
 import '../screens/home/vehicle_details.dart';
@@ -39,12 +43,14 @@ class AppRoutes {
   static const homePage = '/home';
   static const vehicleDetailsPage = '/vehicle-details';
   static const notificationPage = '/notification';
+  static const myProfilePage = '/my-profile';
   static const termsPage = '/terms-condition';
   static const aboutPage = '/about-us';
   static const driverPage = '/driver';
   static const privacyPolicyPage = '/privacy-policy';
   static const contactUsPage = '/contact-us';
   static const otpPage = '/otp';
+  static const addVehiclePage = '/add-vehicle';
 
   static GetPage _getPage(
       String name,
@@ -68,6 +74,8 @@ class AppRoutes {
     _getPage(driverPage, const DriverPage(), binding: DriverBinding()),
     _getPage(privacyPolicyPage, const PrivacyPolicyPage(), binding: PrivacyPolicyBinding()),
     _getPage(contactUsPage, const ContactUsPage(), binding: ContactUsBinding()),
+    _getPage(myProfilePage, const MyProfilePage(), binding: ProfileBinding()),
+    _getPage(addVehiclePage, const AddVehiclePage(), binding: AddVehicleBinding()),
 
 
   ];

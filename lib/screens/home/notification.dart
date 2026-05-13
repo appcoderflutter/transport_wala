@@ -49,6 +49,14 @@ class NotificationPage
           child: Obx(
                 () {
 
+                  if (controller.isLoading.value) {
+
+                    return const Center(
+                      child:
+                      CircularProgressIndicator(),
+                    );
+                  }
+
               /// EMPTY STATE
               if (controller
                   .notifications
@@ -206,36 +214,29 @@ class NotificationPage
 
                         /// ICON
                         Container(
+
                           width: 54.w,
                           height: 54.w,
 
-                          decoration:
-                          BoxDecoration(
+                          decoration: BoxDecoration(
 
-                            shape:
-                            BoxShape.circle,
+                            shape: BoxShape.circle,
 
                             color:
-                            _getBgColor(
-                              notification[
-                              "icon"],
-                            ),
+                            const Color(
+                                0xFF2F66F6)
+                                .withOpacity(0.10),
                           ),
 
                           child: Icon(
-                            _getIcon(
-                              notification[
-                              "icon"],
-                            ),
+
+                            Icons.notifications_rounded,
 
                             color:
-                            _getColor(
-                              notification[
-                              "icon"],
-                            ),
+                            const Color(
+                                0xFF2F66F6),
 
-                            size:
-                            28.sp,
+                            size: 28.sp,
                           ),
                         ),
 
@@ -257,9 +258,7 @@ class NotificationPage
                                   Expanded(
                                     child:
                                     Text(
-                                      notification[
-                                      "title"] ??
-                                          "",
+                                      notification.title,
 
                                       style:
                                       CustomTextTheme.bold(
@@ -273,9 +272,7 @@ class NotificationPage
                                   ),
 
                                   Text(
-                                    notification[
-                                    "time"] ??
-                                        "",
+                                    notification.createdAt,
 
                                     style:
                                     CustomTextTheme.medium(
@@ -294,9 +291,7 @@ class NotificationPage
                                   8.h),
 
                               Text(
-                                notification[
-                                "message"] ??
-                                    "",
+                                notification.message,
 
                                 style:
                                 CustomTextTheme.medium(
@@ -320,76 +315,5 @@ class NotificationPage
         ),
       ),
     );
-  }
-
-  /// =====================
-  /// ICONS
-  /// =====================
-
-  IconData _getIcon(
-      String type,
-      ) {
-
-    switch (type) {
-
-      case "payment":
-        return Icons
-            .account_balance_wallet_rounded;
-
-      case "success":
-        return Icons
-            .verified_rounded;
-
-      default:
-        return Icons
-            .local_shipping_rounded;
-    }
-  }
-
-  /// =====================
-  /// ICON COLOR
-  /// =====================
-
-  Color _getColor(
-      String type,
-      ) {
-
-    switch (type) {
-
-      case "payment":
-        return Colors.orange;
-
-      case "success":
-        return Colors.green;
-
-      default:
-        return const Color(
-            0xFF2F66F6);
-    }
-  }
-
-  /// =====================
-  /// BG COLOR
-  /// =====================
-
-  Color _getBgColor(
-      String type,
-      ) {
-
-    switch (type) {
-
-      case "payment":
-        return Colors.orange
-            .withOpacity(0.12);
-
-      case "success":
-        return Colors.green
-            .withOpacity(0.12);
-
-      default:
-        return const Color(
-            0xFF2F66F6)
-            .withOpacity(0.10);
-    }
   }
 }

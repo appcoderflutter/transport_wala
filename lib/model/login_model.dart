@@ -86,6 +86,8 @@ class LoginUser {
 
   final String? profilePic;
 
+  final String? email;
+
   LoginUser({
 
     required this.userId,
@@ -97,6 +99,8 @@ class LoginUser {
     required this.userType,
 
     this.profilePic,
+
+    this.email,
   });
 
   factory LoginUser.fromJson(
@@ -107,6 +111,8 @@ class LoginUser {
       userId: json["userId"] ?? 0,
 
       name: json["name"] ?? "",
+
+      email: json["email"] as String?,
 
       phone: json["phone"] ?? "",
 

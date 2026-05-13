@@ -84,6 +84,8 @@ class RegisterUser {
 
   final String? profilePic;
 
+  final String? email;
+
   RegisterUser({
 
     required this.userId,
@@ -95,6 +97,8 @@ class RegisterUser {
     required this.userType,
 
     this.profilePic,
+
+    this.email,
   });
 
   factory RegisterUser.fromJson(
@@ -107,6 +111,9 @@ class RegisterUser {
 
       name:
       json["name"] ?? "",
+
+      email:
+      json["email"] as String?,
 
       phone:
       json["phone"] ?? "",

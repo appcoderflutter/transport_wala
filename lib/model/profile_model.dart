@@ -1,112 +1,141 @@
-class ProfileModel {
+import 'package:transport_wala/model/user_model.dart';
 
+class ProfileModel {
   final int status;
 
   final String msg;
 
   final ProfilePayload? payload;
 
-  ProfileModel({
+  ProfileModel({required this.status, required this.msg, this.payload});
 
-    required this.status,
-
-    required this.msg,
-
-    this.payload,
-  });
-
-  factory ProfileModel.fromJson(
-      Map<String, dynamic> json) {
-
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
+      status: json["status"] ?? 0,
 
-      status:
-      json["status"] ?? 0,
+      msg: json["msg"] ?? "",
 
-      msg:
-      json["msg"] ?? "",
-
-      payload:
-      json["payload"] != null
-
-          ? ProfilePayload
-          .fromJson(
-          json["payload"])
-
+      payload: json["payload"] != null
+          ? ProfilePayload.fromJson(json["payload"])
           : null,
     );
   }
 }
 
 class ProfilePayload {
-
   final ProfileUser? user;
 
-  ProfilePayload({
-    this.user,
-  });
+  ProfilePayload({this.user});
 
-  factory ProfilePayload.fromJson(
-      Map<String, dynamic> json) {
-
+  factory ProfilePayload.fromJson(Map<String, dynamic> json) {
     return ProfilePayload(
-
-      user:
-      json["user"] != null
-
-          ? ProfileUser
-          .fromJson(
-          json["user"])
-
-          : null,
+      user: json["user"] != null ? ProfileUser.fromJson(json["user"]) : null,
     );
   }
 }
 
 class ProfileUser {
+  final int? userId;
 
-  final int userId;
+  final int? uniqueUserId;
 
-  final String name;
+  final String? userType;
 
-  final String phone;
+  final String? name;
 
-  final String userType;
+  final String? email;
 
-  final String profilePic;
+  final String? isEmailVerified;
+
+  final String? isdCode;
+
+  final String? phone;
+
+  final String? isPhoneVerified;
+
+  final String? profilePic;
+
+  final int? userActiveRoutes;
+
+  final int? userActiveVehicles;
+
+  final String? isKycVerified;
+
+  final String? paymentTerm;
+
+  final dynamic avgRating;
+
+  final List<KycData> kycData;
 
   ProfileUser({
+    this.userId,
 
-    required this.userId,
+    this.uniqueUserId,
 
-    required this.name,
+    this.userType,
 
-    required this.phone,
+    this.name,
 
-    required this.userType,
+    this.email,
 
-    required this.profilePic,
+    this.isEmailVerified,
+
+    this.isdCode,
+
+    this.phone,
+
+    this.isPhoneVerified,
+
+    this.profilePic,
+
+    this.userActiveRoutes,
+
+    this.userActiveVehicles,
+
+    this.isKycVerified,
+
+    this.paymentTerm,
+
+    this.avgRating,
+
+    this.kycData = const [],
   });
 
-  factory ProfileUser.fromJson(
-      Map<String, dynamic> json) {
-
+  factory ProfileUser.fromJson(Map<String, dynamic> json) {
     return ProfileUser(
+      userId: json["userId"],
 
-      userId:
-      json["userId"] ?? 0,
+      uniqueUserId: json["uniqueUserId"],
 
-      name:
-      json["name"] ?? "",
+      userType: json["userType"],
 
-      phone:
-      json["phone"] ?? "",
+      name: json["name"],
 
-      userType:
-      json["userType"] ?? "",
+      email: json["email"],
 
-      profilePic:
-      json["profilePic"] ?? "",
+      isEmailVerified: json["isEmailVerified"],
+
+      isdCode: json["isdCode"],
+
+      phone: json["phone"],
+
+      isPhoneVerified: json["isPhoneVerified"],
+
+      profilePic: json["profilePic"],
+
+      userActiveRoutes: json["userActiveRoutes"],
+
+      userActiveVehicles: json["userActiveVehicles"],
+
+      isKycVerified: json["isKycVerified"],
+
+      paymentTerm: json["paymentTerm"],
+
+      avgRating: json["avgRating"],
+
+      kycData: json["kycData"] != null
+          ? List<KycData>.from(json["kycData"].map((x) => KycData.fromJson(x)))
+          : [],
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../helpers/custome_loader.dart';
 import '../../helpers/toaster.dart';
 import '../../model/login_model.dart';
+import '../../model/profile_model.dart';
 import '../../model/register_model.dart';
 import '../../model/user_model.dart';
 import '../../network_call/apis/apis_endpoint.dart';
@@ -129,7 +130,7 @@ class OtpController extends GetxController {
             .execute<RegisterModel>(
               fromJson: (json) => RegisterModel.fromJson(json),
 
-              onSuccess: (response) {
+              onSuccess: (response) async {
                 /// TOKEN
 
                 final token = response.payload?.token ?? "";
@@ -145,16 +146,28 @@ class OtpController extends GetxController {
                 if (registerUser != null) {
                   final userModel = UserModel(
                     userId: registerUser.userId,
+
                     name: registerUser.name.isNotEmpty
                         ? registerUser.name
                         : null,
+
+                    email:
+                        registerUser.email?.isNotEmpty == true &&
+                            registerUser.email != "NA"
+                        ? registerUser.email
+                        : null,
+
                     phone: registerUser.phone.isNotEmpty
                         ? registerUser.phone
                         : null,
+
                     userType: registerUser.userType.isNotEmpty
                         ? registerUser.userType
                         : null,
-                    profilePic: registerUser.profilePic?.isNotEmpty == true
+
+                    profilePic:
+                        registerUser.profilePic?.isNotEmpty == true &&
+                            registerUser.profilePic != "NA"
                         ? registerUser.profilePic
                         : null,
                   );
@@ -164,6 +177,9 @@ class OtpController extends GetxController {
                 /// LOGIN STATE
 
                 Prefs.setIsLogin(true);
+
+                /// FETCH LATEST PROFILE
+                await fetchAndSaveProfile();
 
                 AppToast.short(response.msg);
 
@@ -192,7 +208,7 @@ class OtpController extends GetxController {
             .execute<LoginModel>(
               fromJson: (json) => LoginModel.fromJson(json),
 
-              onSuccess: (response) {
+              onSuccess: (response) async {
                 /// TOKEN
 
                 final token = response.payload?.token ?? "";
@@ -208,12 +224,24 @@ class OtpController extends GetxController {
                 if (loginUser != null) {
                   final userModel = UserModel(
                     userId: loginUser.userId,
+
                     name: loginUser.name.isNotEmpty ? loginUser.name : null,
+
+                    email:
+                        loginUser.email?.isNotEmpty == true &&
+                            loginUser.email != "NA"
+                        ? loginUser.email
+                        : null,
+
                     phone: loginUser.phone.isNotEmpty ? loginUser.phone : null,
+
                     userType: loginUser.userType.isNotEmpty
                         ? loginUser.userType
                         : null,
-                    profilePic: loginUser.profilePic?.isNotEmpty == true
+
+                    profilePic:
+                        loginUser.profilePic?.isNotEmpty == true &&
+                            loginUser.profilePic != "NA"
                         ? loginUser.profilePic
                         : null,
                   );
@@ -223,6 +251,9 @@ class OtpController extends GetxController {
                 /// LOGIN STATE
 
                 Prefs.setIsLogin(true);
+
+                /// FETCH LATEST PROFILE
+                await fetchAndSaveProfile();
 
                 AppToast.short(response.msg);
 
@@ -246,6 +277,63 @@ class OtpController extends GetxController {
       debugPrint(e.toString());
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchAndSaveProfile() async {
+    try {
+      await DioHelper.builder()
+          .setMethod("GET")
+          .setUrl(ApiEndpoints.getProfile)
+          .execute<ProfileModel>(
+            fromJson: (json) => ProfileModel.fromJson(json),
+
+            onSuccess: (response) {
+              final user = response.payload?.user;
+
+              if (user != null) {
+                Prefs.setUserData(
+                  UserModel(
+                    userId: user.userId,
+
+                    uniqueUserId: user.uniqueUserId,
+
+                    userType: user.userType,
+
+                    name: user.name,
+
+                    email: user.email,
+
+                    isEmailVerified: user.isEmailVerified,
+
+                    isdCode: user.isdCode,
+
+                    phone: user.phone,
+
+                    isPhoneVerified: user.isPhoneVerified,
+
+                    profilePic: user.profilePic,
+
+                    userActiveRoutes: user.userActiveRoutes,
+
+                    userActiveVehicles: user.userActiveVehicles,
+
+                    isKycVerified: user.isKycVerified,
+
+                    paymentTerm: user.paymentTerm,
+
+                    avgRating: user.avgRating,
+
+                    kycData: user.kycData,
+                  ),
+                );
+              }
+            },
+
+            onFailure: (message, {code}) {},
+          );
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
