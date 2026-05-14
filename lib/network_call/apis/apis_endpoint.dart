@@ -18,6 +18,10 @@ class ApiEndpoints {
   ////////////////////////////////// Home ////////////////////////////////////
   static final String getNotificationList = '${baseUrl}getNotificationList';
   static final String getNotificationCount = '${baseUrl}getNotificationCount';
+  static String getVehicleList(int page) => '${baseUrl}getVehicleList?flag=GEN&page=$page';
+  static final String getRouteList = '${baseUrl}getRouteList';
+  static final String MaxCapacityList = '${baseUrl}MaxCapacityList';
+  static final String saveVehicle = '${baseUrl}saveVehicle';
 
 
   //////////////////////////////// search ///////////////////////////////////
@@ -30,7 +34,6 @@ class ApiEndpoints {
 
 
   ////////////////////////////////// Setting  //////////////////////////////
-
   static final String getTermsConditions = '${baseUrl}getTermsConditions';
   static final String getAboutUs = '${baseUrl}getAboutUs';
   static final String getContactUs = '${baseUrl}getContactUs';

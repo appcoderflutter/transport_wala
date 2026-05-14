@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:transport_wala/utility/utility.dart';
 
 import '../../controllers/home/add_vehicle_controller.dart';
+import '../../helpers/photoPicker/photo_picker.dart';
+import '../../model/max_capacity_model.dart';
 import '../../resources/text_styes/custome_text.dart';
 import '../../widgets/auth_text_field.dart';
 import '../../widgets/custom_appbar.dart';
@@ -29,98 +31,144 @@ class AddVehiclePage extends GetView<AddVehicleController> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 18.h),
-
           child: Column(
             children: [
               /// =========================
               /// IMAGE CONTAINER
               /// =========================
-              Container(
-                width: 220.w,
-                height: 200.h,
+              Obx(() {
+                final image = controller.selectedImage.value;
 
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF7F8FA),
-
-                  borderRadius: BorderRadius.circular(22.r),
-
-                  border: Border.all(
-                    color: const Color(0xFFE5E7EB),
-
-                    width: 1.5,
-                  ),
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-
-                      blurRadius: 14,
-
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-
+                return Column(
                   children: [
-                    Container(
-                      width: 86.w,
+                    GestureDetector(
+                      onTap: () {
+                        controller.pickVehicleImage();
+                      },
 
-                      height: 86.w,
+                      child: Container(
+                        width: 220.w,
 
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        height: 200.h,
 
-                        color: Colors.white,
+                        clipBehavior: Clip.antiAlias,
 
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F8FA),
 
-                            blurRadius: 10,
+                          borderRadius: BorderRadius.circular(22.r),
+
+                          border: Border.all(
+                            color: const Color(0xFFE5E7EB),
+
+                            width: 1.5,
                           ),
-                        ],
-                      ),
 
-                      child: Icon(
-                        Icons.add_photo_alternate_rounded,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
 
-                        size: 46.sp,
+                              blurRadius: 14,
 
-                        color: const Color(0xFF2F66F6),
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+
+                        child: image != null
+                            ? Image.file(
+                                image,
+
+                                fit: BoxFit.cover,
+
+                                width: double.infinity,
+
+                                height: double.infinity,
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+
+                                children: [
+                                  Container(
+                                    width: 86.w,
+
+                                    height: 86.w,
+
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+
+                                      color: Colors.white,
+
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+
+                                          blurRadius: 10,
+                                        ),
+                                      ],
+                                    ),
+
+                                    child: Icon(
+                                      Icons.add_photo_alternate_rounded,
+
+                                      size: 46.sp,
+
+                                      color: const Color(0xFF2F66F6),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 16.h),
+
+                                  Text(
+                                    "Upload Vehicle Image",
+
+                                    style: CustomTextTheme.bold(
+                                      fontSize: 15.sp,
+
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 4.h),
+
+                                  Text(
+                                    "PNG, JPG or JPEG",
+
+                                    style: CustomTextTheme.medium(
+                                      fontSize: 12.sp,
+
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 14.h),
 
-                    Text(
-                      "Upload Vehicle Image",
+                    GestureDetector(
+                      onTap: () {
+                        PhotoPicker.show(
+                          onImageSelected: (file) {
+                            controller.selectedImage.value = file;
+                          },
+                        );
+                      },
 
-                      style: CustomTextTheme.bold(
-                        fontSize: 15.sp,
+                      child: Text(
+                        image == null ? "Add Photo" : "Change Photo",
 
-                        color: Colors.black87,
-                      ),
-                    ),
+                        style: CustomTextTheme.bold(
+                          color: const Color(0xFF2F66F6),
 
-                    SizedBox(height: 4.h),
-
-                    Text(
-                      "PNG, JPG or JPEG",
-
-                      style: CustomTextTheme.medium(
-                        fontSize: 12.sp,
-
-                        color: Colors.black45,
+                          fontSize: 14.sp,
+                        ),
                       ),
                     ),
                   ],
-                ),
-              ),
+                );
+              }),
 
               SizedBox(height: 56.h),
 
@@ -143,13 +191,61 @@ class AddVehiclePage extends GetView<AddVehicleController> {
               SizedBox(height: 16.h),
 
               /// CAPACITY
-              AuthTextField(
-                hint: "Enter Capacity",
+              Obx(() {
+                return Container(
+                  height: 54.h,
 
-                controller: controller.capacityController,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
 
-                keyboardType: TextInputType.number,
-              ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F3F3),
+
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<MaxCapacityData>(
+                      isExpanded: true,
+
+                      value: controller.selectedCapacity.value,
+
+                      hint: Text(
+                        "Select Capacity",
+
+                        style: TextStyle(
+                          color: Colors.black45,
+
+                          fontSize: 13.sp,
+
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+
+                      items: controller.capacityList.map((item) {
+                        return DropdownMenuItem<MaxCapacityData>(
+                          value: item,
+
+                          child: Text(
+                            item.maxCapacity ?? "N/A",
+
+                            style: TextStyle(
+                              color: Colors.black,
+
+                              fontSize: 14.sp,
+
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+
+                      onChanged: (value) {
+                        controller.selectedCapacity.value = value;
+                      },
+                    ),
+                  ),
+                );
+              }),
 
               SizedBox(height: 16.h),
 
@@ -167,7 +263,8 @@ class AddVehiclePage extends GetView<AddVehicleController> {
               /// BUTTON
               GestureDetector(
                 onTap: () {
-                  Get.back();
+
+                  controller.saveVehicle();
                 },
 
                 child: Container(
@@ -197,15 +294,30 @@ class AddVehiclePage extends GetView<AddVehicleController> {
                   ),
 
                   child: Center(
-                    child: Text(
-                      "Submit",
+                    child: Obx(() {
 
-                      style: CustomTextTheme.bold(
-                        color: Colors.white,
+                      return controller.isSubmitting.value
 
-                        fontSize: 17.sp,
-                      ),
-                    ),
+                          ? SizedBox(
+                        width: 22.w,
+                        height: 22.w,
+
+                        child:
+                        const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+
+                          : Text(
+                        "Submit",
+
+                        style: CustomTextTheme.bold(
+                          color: Colors.white,
+                          fontSize: 17.sp,
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ),

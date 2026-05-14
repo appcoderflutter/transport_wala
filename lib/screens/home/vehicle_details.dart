@@ -18,15 +18,9 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
       backgroundColor: MColors.white,
 
       appBar: CustomAppBar(
-        title:
-        (vehicle["truckName"] ?? "")
-            .toString()
-            .trim()
-            .isEmpty
-
+        title: (vehicle.modelNo ?? "").trim().isEmpty || vehicle.modelNo == "NA"
             ? "Unknown Truck"
-
-            : vehicle["truckName"],
+            : vehicle.modelNo!,
 
         backgroundColor: Colors.white,
 
@@ -66,14 +60,10 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
 
                         children: [
                           Text(
-                            (vehicle["truckName"] ?? "")
-                                .toString()
-                                .trim()
-                                .isEmpty
-
+                            (vehicle.modelNo ?? "").trim().isEmpty ||
+                                    vehicle.modelNo == "NA"
                                 ? "Unknown Truck"
-
-                                : vehicle["truckName"],
+                                : vehicle.modelNo!,
 
                             style: CustomTextTheme.bold(
                               color: Colors.black,
@@ -82,15 +72,13 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
                             ),
                           ),
 
+                          SizedBox(height: 4.h),
+
                           Text(
-                            (vehicle["truckNumber"] ?? "")
-                                .toString()
-                                .trim()
-                                .isEmpty
-
+                            (vehicle.rcNo ?? "").trim().isEmpty ||
+                                    vehicle.rcNo == "NA"
                                 ? "Not Available"
-
-                                : vehicle["truckNumber"],
+                                : vehicle.rcNo!,
 
                             style: CustomTextTheme.bold(
                               color: const Color(0xFF2F66F6),
@@ -106,71 +94,57 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
 
                     /// IMAGE
                     ClipRRect(
-                      borderRadius:
-                      BorderRadius.circular(14.r),
+                      borderRadius: BorderRadius.circular(14.r),
 
                       child:
-                      (vehicle["image"] ?? "")
-                          .toString()
-                          .trim()
-                          .isEmpty
-
+                          (vehicle.vehicleImage ?? "").trim().isEmpty ||
+                              vehicle.vehicleImage == "NA"
                           ? Container(
-                        width: 130.w,
-                        height: 170.w,
+                              width: 130.w,
 
-                        color: Colors.grey.shade300,
+                              height: 170.w,
 
-                        child: Center(
-                          child: Icon(
-                            Icons
-                                .image_not_supported_outlined,
+                              color: Colors.grey.shade300,
 
-                            color:
-                            Colors.grey.shade500,
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported_outlined,
 
-                            size: 38.sp,
-                          ),
-                        ),
-                      )
+                                  color: Colors.grey.shade500,
 
-                          : Image.asset(
-                        vehicle["image"],
-
-                        width: 130.w,
-
-                        height: 170.w,
-
-                        fit: BoxFit.cover,
-
-                        errorBuilder:
-                            (
-                            context,
-                            error,
-                            stackTrace,
-                            ) {
-
-                          return Container(
-                            width: 130.w,
-                            height: 170.w,
-
-                            color:
-                            Colors.grey.shade300,
-
-                            child: Center(
-                              child: Icon(
-                                Icons
-                                    .image_not_supported_outlined,
-
-                                color: Colors
-                                    .grey.shade500,
-
-                                size: 38.sp,
+                                  size: 38.sp,
+                                ),
                               ),
+                            )
+                          : Image.network(
+                              vehicle.vehicleImage!,
+
+                              width: 130.w,
+
+                              height: 170.w,
+
+                              fit: BoxFit.cover,
+
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 130.w,
+
+                                  height: 170.w,
+
+                                  color: Colors.grey.shade300,
+
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.image_not_supported_outlined,
+
+                                      color: Colors.grey.shade500,
+
+                                      size: 38.sp,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),
@@ -204,40 +178,48 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
                   children: [
                     _detailsRow(
                       "Number of Tyre",
-                      vehicle["tyre"],
+
+                      vehicle.tryeCount?.toString(),
 
                       "Power",
-                      vehicle["power"],
+
+                      vehicle.maxPower,
                     ),
 
                     _divider(),
 
                     _detailsRow(
                       "Mileage",
-                      vehicle["mileage"],
+
+                      vehicle.hsd,
 
                       "GVW / GCW",
-                      vehicle["weight"],
+
+                      vehicle.maxCapacity,
                     ),
 
                     _divider(),
 
                     _detailsRow(
                       "Truck Number",
-                      vehicle["truckNumber"],
+
+                      vehicle.rcNo,
 
                       "Status",
-                      vehicle["status"],
+
+                      vehicle.enRouteStatus,
                     ),
 
                     _divider(),
 
                     _detailsRow(
                       "Vehicle Type",
-                      vehicle["vehicleType"],
+
+                      vehicle.vehicleType,
 
                       "Fuel",
-                      vehicle["fuel"],
+
+                      vehicle.preferredType,
                     ),
                   ],
                 ),
@@ -285,30 +267,83 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
 
                     SizedBox(height: 16.h),
 
-                    Obx(
-                      () => Wrap(
+                    Obx(() {
+
+                      /// LOADING
+                      if (
+                      controller
+                          .isRouteLoading
+                          .value
+                      ) {
+
+                        return const Center(
+                          child:
+                          CircularProgressIndicator(),
+                        );
+                      }
+
+                      /// EMPTY
+                      if (
+                      controller
+                          .activeLanes
+                          .isEmpty
+                      ) {
+
+                        return Text(
+
+                          "No Active Lanes",
+
+                          style:
+                          CustomTextTheme.medium(
+
+                            color:
+                            Colors.black54,
+
+                            fontSize: 13.sp,
+                          ),
+                        );
+                      }
+
+                      /// LIST
+                      return Wrap(
+
                         spacing: 10.w,
 
                         runSpacing: 10.h,
 
-                        children: controller.activeLanes.map((lane) {
+                        children:
+
+                        controller
+                            .activeLanes
+                            .map((lane) {
+
                           return Container(
-                            padding: EdgeInsets.symmetric(
+
+                            padding:
+                            EdgeInsets.symmetric(
+
                               horizontal: 14.w,
 
                               vertical: 10.h,
                             ),
 
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.r),
 
-                              border: Border.all(color: Colors.black12),
+                              borderRadius:
+                              BorderRadius.circular(10.r),
+
+                              border: Border.all(
+                                color: Colors.black12,
+                              ),
                             ),
 
                             child: Text(
+
                               lane,
 
-                              style: CustomTextTheme.medium(
+                              style:
+                              CustomTextTheme.medium(
+
                                 color: Colors.black87,
 
                                 fontSize: 13.sp,
@@ -316,8 +351,8 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
                             ),
                           );
                         }).toList(),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -366,11 +401,7 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
         SizedBox(height: 4.h),
 
         Text(
-          (value ?? "")
-              .trim()
-              .isEmpty
-              ? "--"
-              : value!,
+          (value ?? "").trim().isEmpty || value == "NA" ? "--" : value!,
 
           style: CustomTextTheme.bold(color: Colors.black, fontSize: 16.sp),
         ),

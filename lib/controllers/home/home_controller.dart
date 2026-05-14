@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../model/notification_count_model.dart';
+import '../../model/route_list_model.dart';
+import '../../model/vehicle_list_model.dart';
 import '../../network_call/apis/apis_endpoint.dart';
 import '../../network_call/dio_helper/dio_helper.dart';
 import '../../resources/text_styes/custome_text.dart';
@@ -16,171 +18,146 @@ class HomeController extends GetxController {
 
   final ownerName = "Owner".obs;
 
-  final activeLanes = 15.obs;
+  RxInt activeLanes = 0.obs;
 
-  final loadRequests = 14.obs;
+  RxInt loadRequests = 0.obs;
 
   /// NOTIFICATION COUNT
 
   RxInt notificationCount = 0.obs;
+
+  RxBool isVehicleLoading = false.obs;
+
+  /// PAGINATION
+
+  RxBool isPaginationLoading = false.obs;
+
+  bool hasMoreData = true;
+
+  int currentPage = 1;
+
+  /// SCROLL CONTROLLER
+
+  final ScrollController scrollController = ScrollController();
 
   /// =========================
   /// VEHICLE LIST
   /// API READY
   /// =========================
 
-  final RxList<Map<String, dynamic>> vehicles = <Map<String, dynamic>>[
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Mahindra Blazo X 35 LIFT AXLE",
-
-      "truckNumber": "KA-07-8742",
-
-      "tyre": "12",
-
-      "power": "276 hp",
-
-      "mileage": "4.5 kmpl",
-
-      "weight": "35000 kg",
-
-      "status": "Active",
-
-      "vehicleType": "Big Truck",
-
-      "fuel": "Petrol",
-    },
-
-    {
-      "image": "",
-
-      "truckName": "",
-
-      "truckNumber": "",
-
-      "tyre": "",
-
-      "power": "",
-
-      "mileage": "",
-
-      "weight": "",
-
-      "status": "",
-
-      "vehicleType": "",
-
-      "fuel": "",
-    },
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Tata Signa 5530.S",
-
-      "truckNumber": "WB-24-4587",
-
-      "tyre": "14",
-
-      "power": "300 hp",
-
-      "mileage": "5.2 kmpl",
-
-      "weight": "42000 kg",
-
-      "status": "Active",
-
-      "vehicleType": "Truck",
-
-      "fuel": "Diesel",
-    },
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Mahindra Blazo X 35 LIFT AXLE",
-
-      "truckNumber": "KA-07-8742",
-
-      "tyre": "12",
-
-      "power": "276 hp",
-
-      "mileage": "4.5 kmpl",
-
-      "weight": "35000 kg",
-
-      "status": "Inactive",
-
-      "vehicleType": "Truck",
-
-      "fuel": "Petrol",
-    },
-
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Tata Signa 5530.S",
-
-      "truckNumber": "WB-24-4587",
-
-      "tyre": "14",
-
-      "power": "300 hp",
-
-      "mileage": "5.2 kmpl",
-
-      "weight": "42000 kg",
-
-      "status": "Active",
-
-      "vehicleType": "Truck",
-
-      "fuel": "Diesel",
-    },
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Mahindra Blazo X 35 LIFT AXLE",
-
-      "truckNumber": "KA-07-8742",
-
-      "tyre": "12",
-
-      "power": "276 hp",
-
-      "mileage": "4.5 kmpl",
-
-      "weight": "35000 kg",
-
-      "status": "Active",
-
-      "vehicleType": "Truck",
-
-      "fuel": "Diesel",
-    },
-
-    {
-      "image": "assets/images/card_truck.png",
-
-      "truckName": "Tata Signa 5530.S",
-
-      "truckNumber": "WB-24-4587",
-
-      "tyre": "14",
-
-      "power": "300 hp",
-
-      "mileage": "5.2 kmpl",
-
-      "weight": "42000 kg",
-
-      "status": "Active",
-
-      "vehicleType": "Truck",
-
-      "fuel": "Diesel",
-    },
-  ].obs;
+  final RxList<VehicleData> vehicles = <VehicleData>[].obs;
+
+  /// =========================
+  /// GET VEHICLE LIST
+  /// =========================
+
+  Future<void> getVehicleList() async {
+    try {
+      currentPage = 1;
+
+      hasMoreData = true;
+
+      isVehicleLoading.value = true;
+
+      await DioHelper.builder()
+          .setMethod("GET")
+          .setUrl(ApiEndpoints.getVehicleList(currentPage))
+          .execute<VehicleListModel>(
+            fromJson: (json) => VehicleListModel.fromJson(json),
+
+            onSuccess: (response) {
+              vehicles.value = response.payload?.vehicleList?.data ?? [];
+
+              /// TOTAL COUNT
+
+              loadRequests.value = response.payload?.vehicleList?.total ?? 0;
+
+              /// HAS MORE
+
+              hasMoreData = vehicles.length < loadRequests.value;
+            },
+
+            onFailure: (message, {code}) {
+              vehicles.clear();
+
+              loadRequests.value = 0;
+            },
+          );
+    } catch (e) {
+      vehicles.clear();
+
+      loadRequests.value = 0;
+    } finally {
+      isVehicleLoading.value = false;
+    }
+  }
+
+  /// =========================
+  /// LOAD MORE VEHICLES
+  /// =========================
+
+  Future<void> loadMoreVehicles() async {
+    try {
+      isPaginationLoading.value = true;
+
+      currentPage++;
+
+      await DioHelper.builder()
+          .setMethod("GET")
+          .setUrl(ApiEndpoints.getVehicleList(currentPage))
+          .execute<VehicleListModel>(
+            fromJson: (json) => VehicleListModel.fromJson(json),
+
+            onSuccess: (response) {
+              final newVehicles = response.payload?.vehicleList?.data ?? [];
+
+              if (newVehicles.isEmpty) {
+                hasMoreData = false;
+              } else {
+                vehicles.addAll(newVehicles);
+
+                hasMoreData = vehicles.length < loadRequests.value;
+              }
+            },
+
+            onFailure: (message, {code}) {
+              currentPage--;
+            },
+          );
+    } catch (e) {
+      currentPage--;
+    } finally {
+      isPaginationLoading.value = false;
+    }
+  }
+
+  /// =========================
+  /// GET ROUTE LIST
+  /// =========================
+
+  Future<void> getRouteList() async {
+    try {
+      await DioHelper.builder()
+          .setMethod("GET")
+          .setUrl(ApiEndpoints.getRouteList)
+          .execute<RouteListModel>(
+            fromJson: (json) => RouteListModel.fromJson(json),
+
+            onSuccess: (response) {
+              /// ACTIVE LANES COUNT
+
+              activeLanes.value =
+                  response.payload?.vehicleRouteList?.total ?? 0;
+            },
+
+            onFailure: (message, {code}) {
+              activeLanes.value = 0;
+            },
+          );
+    } catch (e) {
+      activeLanes.value = 0;
+    }
+  }
 
   /// =========================
   /// EXIT DIALOG
@@ -290,53 +267,51 @@ class HomeController extends GetxController {
   /// GET NOTIFICATION COUNT
   /// =========================
 
-  Future<void>
-  getNotificationCount() async {
-
+  Future<void> getNotificationCount() async {
     try {
-
       await DioHelper.builder()
-
           .setMethod("GET")
-
-          .setUrl(
-          ApiEndpoints
-              .getNotificationCount)
-
+          .setUrl(ApiEndpoints.getNotificationCount)
           .execute<NotificationCountModel>(
+            fromJson: (json) => NotificationCountModel.fromJson(json),
 
-        fromJson: (json) =>
+            onSuccess: (response) {
+              notificationCount.value = response.payload?.count ?? 0;
+            },
 
-            NotificationCountModel
-                .fromJson(json),
-
-        onSuccess: (response) {
-
-          notificationCount.value =
-
-              response
-                  .payload
-                  ?.count ?? 0;
-        },
-
-        onFailure:
-            (message, {code}) {
-
-          notificationCount.value = 0;
-        },
-      );
-
+            onFailure: (message, {code}) {
+              notificationCount.value = 0;
+            },
+          );
     } catch (e) {
-
       notificationCount.value = 0;
     }
   }
 
   @override
   void onInit() {
-
     super.onInit();
 
     getNotificationCount();
+
+    getVehicleList();
+
+    getRouteList();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 200 &&
+          !isPaginationLoading.value &&
+          hasMoreData) {
+        loadMoreVehicles();
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    scrollController.dispose();
+
+    super.onClose();
   }
 }

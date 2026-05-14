@@ -129,12 +129,9 @@ class HomeDrawer extends StatelessWidget {
 
                       GestureDetector(
                         onTap: () {
-
                           Get.back();
 
-                          Get.toNamed(
-                            AppRoutes.myProfilePage,
-                          );
+                          Get.toNamed(AppRoutes.myProfilePage);
                         },
                         child: Container(
                           width: 24.w,
@@ -423,9 +420,13 @@ class HomeDrawer extends StatelessWidget {
                           .setUrl(ApiEndpoints.logout)
                           .execute(
                             onSuccess: (response) {
-                              /// CLEAR LOCAL DATA
+                              /// CLEAR ALL LOCAL DATA
 
                               Prefs.setIsLogin(false);
+
+                              Prefs.setToken("");
+
+                              Prefs.userRx.value = null;
 
                               /// HIDE LOADER
 
@@ -439,10 +440,13 @@ class HomeDrawer extends StatelessWidget {
                             },
 
                             onFailure: (message, {code}) {
-                              /// EVEN IF API FAILS
                               /// FORCE LOGOUT
 
                               Prefs.setIsLogin(false);
+
+                              Prefs.setToken("");
+
+                              Prefs.userRx.value = null;
 
                               Loader.hide();
 
@@ -455,6 +459,10 @@ class HomeDrawer extends StatelessWidget {
                       /// FORCE CLEAR
 
                       Prefs.setIsLogin(false);
+
+                      Prefs.setToken("");
+
+                      Prefs.userRx.value = null;
 
                       Get.offAllNamed(AppRoutes.loginPage);
                     }

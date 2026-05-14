@@ -73,18 +73,25 @@ class VehicleCard extends StatelessWidget {
 
 
             ClipRRect(
+
               borderRadius:
               BorderRadius.circular(14.r),
 
-              child: image.isEmpty
+              child:
+
+              image.trim().isEmpty ||
+                  image == "NA"
 
                   ? Container(
+
                 width: 110.w,
 
                 color: Colors.grey.shade300,
 
                 child: Center(
+
                   child: Icon(
+
                     Icons.image_not_supported_outlined,
 
                     color: Colors.grey.shade500,
@@ -94,7 +101,8 @@ class VehicleCard extends StatelessWidget {
                 ),
               )
 
-                  : Image.asset(
+                  : Image.network(
+
                 image,
 
                 width: 110.w,
@@ -102,15 +110,22 @@ class VehicleCard extends StatelessWidget {
                 fit: BoxFit.cover,
 
                 errorBuilder:
-                    (context, error, stackTrace) {
+                    (
+                    context,
+                    error,
+                    stackTrace,
+                    ) {
 
                   return Container(
+
                     width: 110.w,
 
                     color: Colors.grey.shade300,
 
                     child: Center(
+
                       child: Icon(
+
                         Icons.image_not_supported_outlined,
 
                         color: Colors.grey.shade500,

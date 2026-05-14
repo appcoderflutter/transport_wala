@@ -234,27 +234,20 @@ class HomePage extends GetView<HomeController> {
                     ),
 
                     GestureDetector(
-
                       onTap: () {
-
-                        Get.toNamed(
-                          AppRoutes.addVehiclePage,
-                        );
+                        Get.toNamed(AppRoutes.addVehiclePage);
                       },
 
                       child: Text(
-
                         "Add More",
 
-                        style:
-                        CustomTextTheme.medium(
-
+                        style: CustomTextTheme.medium(
                           fontSize: 13.sp,
 
                           color: Colors.black45,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -267,6 +260,10 @@ class HomePage extends GetView<HomeController> {
                   padding: EdgeInsets.symmetric(horizontal: 18.w),
 
                   child: Obx(() {
+                    if (controller.isVehicleLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
                     /// EMPTY STATE
                     if (controller.vehicles.isEmpty) {
                       return Center(
@@ -334,10 +331,7 @@ class HomePage extends GetView<HomeController> {
                               /// BUTTON
                               GestureDetector(
                                 onTap: () {
-
-                                  Get.toNamed(
-                                    AppRoutes.addVehiclePage,
-                                  );
+                                  Get.toNamed(AppRoutes.addVehiclePage);
                                 },
 
                                 child: Container(
@@ -404,28 +398,42 @@ class HomePage extends GetView<HomeController> {
 
                     /// VEHICLE LIST
                     return ListView.builder(
+                      controller: controller.scrollController,
                       padding: EdgeInsets.only(bottom: 20.h),
 
-                      itemCount: controller.vehicles.length,
+                      itemCount:
+                          controller.vehicles.length +
+                          (controller.hasMoreData ? 1 : 0),
 
                       itemBuilder: (context, index) {
-                        final Map<String, dynamic> vehicle =
-                            controller.vehicles[index];
+                        /// PAGINATION LOADER
+
+                        if (index >= controller.vehicles.length) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 18.h),
+
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
+                        final vehicle = controller.vehicles[index];
 
                         return VehicleCard(
-                          image: vehicle["image"] ?? "",
+                          image: vehicle.vehicleImage ?? "",
 
-                          truckName: vehicle["truckName"] ?? "",
+                          truckName: vehicle.modelNo ?? "",
 
-                          truckNumber: vehicle["truckNumber"] ?? "",
+                          truckNumber: vehicle.rcNo ?? "",
 
-                          tyre: vehicle["tyre"] ?? "",
+                          tyre: vehicle.tryeCount?.toString() ?? "",
 
-                          power: vehicle["power"] ?? "",
+                          power: vehicle.maxPower ?? "",
 
-                          mileage: vehicle["mileage"] ?? "",
+                          mileage: vehicle.hsd ?? "",
 
-                          weight: vehicle["weight"] ?? "",
+                          weight: vehicle.maxCapacity ?? "",
 
                           onTap: () {
                             Get.toNamed(
