@@ -6,8 +6,10 @@ import 'package:get/get.dart';
 import '../../helpers/custome_loader.dart';
 import '../../helpers/toaster.dart';
 import '../../model/login_model.dart';
+import '../../model/login_send_otp_model.dart';
 import '../../model/profile_model.dart';
 import '../../model/register_model.dart';
+import '../../model/register_send_otp_model.dart';
 import '../../model/user_model.dart';
 import '../../network_call/apis/apis_endpoint.dart';
 import '../../network_call/dio_helper/dio_helper.dart';
@@ -15,29 +17,41 @@ import '../../prefs/prefs.dart';
 import '../../routes/app_routes.dart';
 
 class OtpController extends GetxController {
+  /// =========================
+  /// OTP CONTROLLER
+  /// =========================
+
   final otpController = TextEditingController();
+
+  /// =========================
+  /// TYPE
+  /// =========================
 
   late String type;
 
-  late String otpCode;
+  /// =========================
+  /// OTP
+  /// =========================
+
+  RxString otpCode = "".obs;
+
+  /// =========================
+  /// USER DATA
+  /// =========================
 
   late String name;
 
   late String userType;
 
-  /// LOADING
+  late String phone;
 
-  RxBool isLoading = false.obs;
-
+  /// =========================
   /// TIMER
+  /// =========================
 
   RxInt seconds = 30.obs;
 
   Timer? _timer;
-
-  /// PHONE
-
-  late String phone;
 
   @override
   void onInit() {
@@ -45,7 +59,7 @@ class OtpController extends GetxController {
 
     phone = Get.arguments?["phone"] ?? "";
 
-    otpCode = Get.arguments?["otp"] ?? "";
+    otpCode.value = Get.arguments?["otp"] ?? "";
 
     type = Get.arguments?["type"] ?? "";
 
@@ -56,7 +70,9 @@ class OtpController extends GetxController {
     startTimer();
   }
 
+  /// =========================
   /// START TIMER
+  /// =========================
 
   void startTimer() {
     seconds.value = 30;
@@ -72,15 +88,85 @@ class OtpController extends GetxController {
     });
   }
 
+  /// =========================
   /// RESEND OTP
+  /// =========================
 
-  void resendOtp() {
-    startTimer();
+  Future<void> resendOtp() async {
+    try {
+      /// FULL SCREEN LOADER
 
-    AppToast.short("OTP resent successfully");
+      Loader.show();
+
+      /// REGISTER
+
+      if (type == "register") {
+        await DioHelper.builder()
+            .setMethod("POST")
+            .setUrl(ApiEndpoints.registerSendOtp)
+            .setData({"name": name, "phone": phone, "userType": userType})
+            .execute<RegisterSendOtpModel>(
+              fromJson: (json) => RegisterSendOtpModel.fromJson(json),
+
+              onSuccess: (response) {
+                otpCode.value = response.payload?.otp.toString() ?? "";
+
+                startTimer();
+
+                otpController.clear();
+
+                Loader.hide();
+
+                AppToast.short(response.msg);
+              },
+
+              onFailure: (message, {code}) {
+                Loader.hide();
+
+                AppToast.short(message);
+              },
+            );
+      }
+      /// LOGIN
+      else if (type == "login") {
+        await DioHelper.builder()
+            .setMethod("POST")
+            .setUrl(ApiEndpoints.loginSendOTP)
+            .setData({"phone": phone})
+            .execute<LoginSendOtpModel>(
+              fromJson: (json) => LoginSendOtpModel.fromJson(json),
+
+              onSuccess: (response) {
+                otpCode.value = response.payload?.otp.toString() ?? "";
+
+                startTimer();
+
+                otpController.clear();
+
+                Loader.hide();
+
+                AppToast.short(response.msg);
+              },
+
+              onFailure: (message, {code}) {
+                Loader.hide();
+
+                AppToast.short(message);
+              },
+            );
+      }
+    } catch (e) {
+      Loader.hide();
+
+      AppToast.short("Failed to resend OTP");
+
+      debugPrint(e.toString());
+    }
   }
 
+  /// =========================
   /// VERIFY OTP
+  /// =========================
 
   Future<void> verifyOtp() async {
     final enteredOtp = otpController.text.trim();
@@ -101,11 +187,9 @@ class OtpController extends GetxController {
       return;
     }
 
-    /// OTP MATCH CHECK
+    /// MATCH CHECK
 
-    if (enteredOtp != otpCode) {
-      /// CLEAR OTP FIELD
-
+    if (enteredOtp != otpCode.value) {
       otpController.clear();
 
       AppToast.short("Invalid OTP");
@@ -114,13 +198,11 @@ class OtpController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
+      /// FULL SCREEN LOADER
 
       Loader.show();
 
-      /// =========================
-      /// REGISTER FLOW
-      /// =========================
+      /// REGISTER
 
       if (type == "register") {
         await DioHelper.builder()
@@ -131,18 +213,14 @@ class OtpController extends GetxController {
               fromJson: (json) => RegisterModel.fromJson(json),
 
               onSuccess: (response) async {
-                /// TOKEN
-
                 final token = response.payload?.token ?? "";
-
-                /// TOKEN SAVE
 
                 if (token.isNotEmpty) {
                   Prefs.setToken(token);
                 }
 
-                /// ✅ SAVE USER DATA
                 final registerUser = response.payload?.user;
+
                 if (registerUser != null) {
                   final userModel = UserModel(
                     userId: registerUser.userId,
@@ -171,35 +249,29 @@ class OtpController extends GetxController {
                         ? registerUser.profilePic
                         : null,
                   );
+
                   Prefs.setUserData(userModel);
                 }
 
-                /// LOGIN STATE
-
                 Prefs.setIsLogin(true);
 
-                /// FETCH LATEST PROFILE
                 await fetchAndSaveProfile();
-
-                AppToast.short(response.msg);
-
-                /// HIDE LOADER
 
                 Loader.hide();
 
-                /// GO HOME
+                AppToast.short(response.msg);
 
                 Get.offAllNamed(AppRoutes.homePage);
               },
 
               onFailure: (message, {code}) {
+                Loader.hide();
+
                 AppToast.short(message);
               },
             );
       }
-      /// =========================
-      /// LOGIN FLOW
-      /// =========================
+      /// LOGIN
       else if (type == "login") {
         await DioHelper.builder()
             .setMethod("POST")
@@ -209,18 +281,14 @@ class OtpController extends GetxController {
               fromJson: (json) => LoginModel.fromJson(json),
 
               onSuccess: (response) async {
-                /// TOKEN
-
                 final token = response.payload?.token ?? "";
-
-                /// SAVE TOKEN
 
                 if (token.isNotEmpty) {
                   Prefs.setToken(token);
                 }
 
-                /// ✅ SAVE USER DATA
                 final loginUser = response.payload?.user;
+
                 if (loginUser != null) {
                   final userModel = UserModel(
                     userId: loginUser.userId,
@@ -245,40 +313,40 @@ class OtpController extends GetxController {
                         ? loginUser.profilePic
                         : null,
                   );
+
                   Prefs.setUserData(userModel);
                 }
 
-                /// LOGIN STATE
-
                 Prefs.setIsLogin(true);
 
-                /// FETCH LATEST PROFILE
                 await fetchAndSaveProfile();
-
-                AppToast.short(response.msg);
-
-                /// HIDE LOADER
 
                 Loader.hide();
 
-                /// GO HOME
+                AppToast.short(response.msg);
 
                 Get.offAllNamed(AppRoutes.homePage);
               },
 
               onFailure: (message, {code}) {
+                Loader.hide();
+
                 AppToast.short(message);
               },
             );
       }
     } catch (e) {
+      Loader.hide();
+
       AppToast.short("OTP Verification Failed");
 
       debugPrint(e.toString());
-    } finally {
-      isLoading.value = false;
     }
   }
+
+  /// =========================
+  /// FETCH PROFILE
+  /// =========================
 
   Future<void> fetchAndSaveProfile() async {
     try {

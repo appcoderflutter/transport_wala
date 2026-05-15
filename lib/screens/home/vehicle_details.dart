@@ -34,99 +34,80 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
       ),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.w),
+        child: Stack(
+          children: [
+            /// =====================
+            /// SCROLL AREA
+            /// =====================
+            SingleChildScrollView(
+              padding: EdgeInsets.all(16.w),
 
-          child: Column(
-            children: [
-              /// =====================
-              /// TOP CARD
-              /// =====================
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-
-                  borderRadius: BorderRadius.circular(18.r),
-                ),
-
-                child: Row(
-                  children: [
-                    /// LEFT
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-
-                        children: [
-                          Text(
-                            (vehicle.modelNo ?? "").trim().isEmpty ||
-                                    vehicle.modelNo == "NA"
-                                ? "Unknown Truck"
-                                : vehicle.modelNo!,
-
-                            style: CustomTextTheme.bold(
-                              color: Colors.black,
-
-                              fontSize: 26.sp,
-                            ),
-                          ),
-
-                          SizedBox(height: 4.h),
-
-                          Text(
-                            (vehicle.rcNo ?? "").trim().isEmpty ||
-                                    vehicle.rcNo == "NA"
-                                ? "Not Available"
-                                : vehicle.rcNo!,
-
-                            style: CustomTextTheme.bold(
-                              color: const Color(0xFF2F66F6),
-
-                              fontSize: 18.sp,
-                            ),
-                          ),
-                        ],
-                      ),
+              child: Column(
+                children: [
+                  /// =====================
+                  /// TOP CARD
+                  /// =====================
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 24.h,
                     ),
 
-                    SizedBox(width: 14.w),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
 
-                    /// IMAGE
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14.r),
+                      borderRadius: BorderRadius.circular(18.r),
+                    ),
 
-                      child:
-                          (vehicle.vehicleImage ?? "").trim().isEmpty ||
-                              vehicle.vehicleImage == "NA"
-                          ? Container(
-                              width: 130.w,
+                    child: Row(
+                      children: [
+                        /// LEFT
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
 
-                              height: 170.w,
+                            children: [
+                              Text(
+                                (vehicle.modelNo ?? "").trim().isEmpty ||
+                                        vehicle.modelNo == "NA"
+                                    ? "Unknown Truck"
+                                    : vehicle.modelNo!,
 
-                              color: Colors.grey.shade300,
+                                style: CustomTextTheme.bold(
+                                  color: Colors.black,
 
-                              child: Center(
-                                child: Icon(
-                                  Icons.image_not_supported_outlined,
-
-                                  color: Colors.grey.shade500,
-
-                                  size: 38.sp,
+                                  fontSize: 26.sp,
                                 ),
                               ),
-                            )
-                          : Image.network(
-                              vehicle.vehicleImage!,
 
-                              width: 130.w,
+                              SizedBox(height: 4.h),
 
-                              height: 170.w,
+                              Text(
+                                (vehicle.rcNo ?? "").trim().isEmpty ||
+                                        vehicle.rcNo == "NA"
+                                    ? "Not Available"
+                                    : vehicle.rcNo!,
 
-                              fit: BoxFit.cover,
+                                style: CustomTextTheme.bold(
+                                  color: const Color(0xFF2F66F6),
 
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
+                                  fontSize: 18.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(width: 14.w),
+
+                        /// IMAGE
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(14.r),
+
+                          child:
+                              (vehicle.vehicleImage ?? "").trim().isEmpty ||
+                                  vehicle.vehicleImage == "NA"
+                              ? Container(
                                   width: 130.w,
 
                                   height: 170.w,
@@ -142,222 +123,359 @@ class VehicleDetailsPage extends GetView<VehicleDetailsController> {
                                       size: 38.sp,
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                )
+                              : Image.network(
+                                  vehicle.vehicleImage!,
+
+                                  width: 130.w,
+
+                                  height: 170.w,
+
+                                  fit: BoxFit.cover,
+
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 130.w,
+
+                                      height: 170.w,
+
+                                      color: Colors.grey.shade300,
+
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.image_not_supported_outlined,
+
+                                          color: Colors.grey.shade500,
+
+                                          size: 38.sp,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              SizedBox(height: 20.h),
+                  SizedBox(height: 20.h),
 
-              /// =====================
-              /// DETAILS CARD
-              /// =====================
-              Container(
-                padding: EdgeInsets.all(16.w),
+                  /// =====================
+                  /// DETAILS CARD
+                  /// =====================
+                  Container(
+                    padding: EdgeInsets.all(16.w),
 
-                decoration: BoxDecoration(
-                  color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
 
-                  borderRadius: BorderRadius.circular(18.r),
+                      borderRadius: BorderRadius.circular(18.r),
 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
 
-                      blurRadius: 14,
+                          blurRadius: 14,
 
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  children: [
-                    _detailsRow(
-                      "Number of Tyre",
-
-                      vehicle.tryeCount?.toString(),
-
-                      "Power",
-
-                      vehicle.maxPower,
-                    ),
-
-                    _divider(),
-
-                    _detailsRow(
-                      "Mileage",
-
-                      vehicle.hsd,
-
-                      "GVW / GCW",
-
-                      vehicle.maxCapacity,
-                    ),
-
-                    _divider(),
-
-                    _detailsRow(
-                      "Truck Number",
-
-                      vehicle.rcNo,
-
-                      "Status",
-
-                      vehicle.enRouteStatus,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
                     ),
 
-                    _divider(),
+                    child: Column(
+                      children: [
+                        _detailsRow(
+                          "Number of Tyre",
 
-                    _detailsRow(
-                      "Vehicle Type",
+                          vehicle.tryeCount?.toString(),
 
-                      vehicle.vehicleType,
+                          "Power",
 
-                      "Fuel",
+                          vehicle.maxPower,
+                        ),
 
-                      vehicle.preferredType,
+                        _divider(),
+
+                        _detailsRow(
+                          "Mileage",
+
+                          vehicle.hsd,
+
+                          "GVW / GCW",
+
+                          vehicle.maxCapacity,
+                        ),
+
+                        _divider(),
+
+                        _detailsRow(
+                          "Truck Number",
+
+                          vehicle.rcNo,
+
+                          "Status",
+
+                          vehicle.enRouteStatus,
+                        ),
+
+                        _divider(),
+
+                        _detailsRow(
+                          "Vehicle Type",
+
+                          vehicle.vehicleType,
+
+                          "Fuel",
+
+                          vehicle.preferredType,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              SizedBox(height: 20.h),
+                  SizedBox(height: 20.h),
 
-              /// =====================
-              /// ACTIVE LANES
-              /// =====================
-              Container(
-                width: double.infinity,
+                  /// =====================
+                  /// ACTIVE LANES
+                  /// =====================
+                  Container(
+                    width: double.infinity,
 
-                padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.all(16.w),
 
-                decoration: BoxDecoration(
-                  color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
 
-                  borderRadius: BorderRadius.circular(18.r),
+                      borderRadius: BorderRadius.circular(18.r),
 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
 
-                      blurRadius: 14,
+                          blurRadius: 14,
 
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                  children: [
-                    Text(
-                      "Active Lanes",
-
-                      style: CustomTextTheme.bold(
-                        color: Colors.black,
-
-                        fontSize: 16.sp,
-                      ),
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
                     ),
 
-                    SizedBox(height: 16.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                    Obx(() {
+                      children: [
+                        Text(
+                          "Active Lanes",
 
-                      /// LOADING
-                      if (
-                      controller
-                          .isRouteLoading
-                          .value
-                      ) {
+                          style: CustomTextTheme.bold(
+                            color: Colors.black,
 
-                        return const Center(
-                          child:
-                          CircularProgressIndicator(),
-                        );
-                      }
-
-                      /// EMPTY
-                      if (
-                      controller
-                          .activeLanes
-                          .isEmpty
-                      ) {
-
-                        return Text(
-
-                          "No Active Lanes",
-
-                          style:
-                          CustomTextTheme.medium(
-
-                            color:
-                            Colors.black54,
-
-                            fontSize: 13.sp,
+                            fontSize: 16.sp,
                           ),
-                        );
-                      }
+                        ),
 
-                      /// LIST
-                      return Wrap(
+                        SizedBox(height: 16.h),
 
-                        spacing: 10.w,
+                        Obx(() {
+                          if (controller.isRouteLoading.value) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
 
-                        runSpacing: 10.h,
+                          if (controller.activeLanes.isEmpty) {
+                            return Text(
+                              "No Active Lanes",
 
-                        children:
-
-                        controller
-                            .activeLanes
-                            .map((lane) {
-
-                          return Container(
-
-                            padding:
-                            EdgeInsets.symmetric(
-
-                              horizontal: 14.w,
-
-                              vertical: 10.h,
-                            ),
-
-                            decoration: BoxDecoration(
-
-                              borderRadius:
-                              BorderRadius.circular(10.r),
-
-                              border: Border.all(
-                                color: Colors.black12,
-                              ),
-                            ),
-
-                            child: Text(
-
-                              lane,
-
-                              style:
-                              CustomTextTheme.medium(
-
-                                color: Colors.black87,
+                              style: CustomTextTheme.medium(
+                                color: Colors.black54,
 
                                 fontSize: 13.sp,
                               ),
-                            ),
+                            );
+                          }
+
+                          return Wrap(
+                            spacing: 10.w,
+
+                            runSpacing: 10.h,
+
+                            children: controller.activeLanes.map((lane) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 14.w,
+
+                                  vertical: 10.h,
+                                ),
+
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.r),
+
+                                  border: Border.all(color: Colors.black12),
+                                ),
+
+                                child: Text(
+                                  lane,
+
+                                  style: CustomTextTheme.medium(
+                                    color: Colors.black87,
+
+                                    fontSize: 13.sp,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
-                      );
-                    }),
+                        }),
+                      ],
+                    ),
+                  ),
+
+                  /// EXTRA SPACE
+                  SizedBox(height: 120.h),
+                ],
+              ),
+            ),
+
+            /// =====================
+            /// FIXED BUTTONS
+            /// =====================
+            Align(
+              alignment: Alignment.bottomCenter,
+
+              child: Container(
+                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 20.h),
+
+                decoration: BoxDecoration(
+                  color: Colors.white,
+
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+
+                      blurRadius: 18,
+
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
+                ),
+
+                child: Row(
+                  children: [
+                    /// DELETE
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+
+                          controller.showDeleteDialog();
+                        },
+
+                        child: Container(
+                          height: 56.h,
+
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF1F1),
+
+                            borderRadius: BorderRadius.circular(18.r),
+
+                            border: Border.all(color: const Color(0xFFFFD4D4)),
+                          ),
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+
+                            children: [
+                              Icon(
+                                Icons.delete_outline_rounded,
+
+                                color: const Color(0xFFE53935),
+
+                                size: 22.sp,
+                              ),
+
+                              SizedBox(width: 8.w),
+
+                              Text(
+                                "Delete",
+
+                                style: CustomTextTheme.bold(
+                                  color: const Color(0xFFE53935),
+
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(width: 14.w),
+
+                    /// EDIT
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {},
+
+                        child: Container(
+                          height: 56.h,
+
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18.r),
+
+                            gradient: const LinearGradient(
+                              begin: Alignment.centerLeft,
+
+                              end: Alignment.centerRight,
+
+                              colors: [Color(0xFF2F66F6), Color(0xFF001A9F)],
+                            ),
+
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(
+                                  0xFF2F66F6,
+                                ).withOpacity(0.28),
+
+                                blurRadius: 16,
+
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+
+                            children: [
+                              Icon(
+                                Icons.edit_outlined,
+
+                                color: Colors.white,
+
+                                size: 21.sp,
+                              ),
+
+                              SizedBox(width: 8.w),
+
+                              Text(
+                                "Edit Vehicle",
+
+                                style: CustomTextTheme.bold(
+                                  color: Colors.white,
+
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

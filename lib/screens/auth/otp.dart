@@ -136,37 +136,39 @@ class OtpPage extends GetView<OtpController> {
 
                       SizedBox(width: 14.w),
 
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "OTP : ",
+                      Obx(() {
+                        return RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "OTP : ",
 
-                              style: TextStyle(
-                                color: Colors.black54,
+                                style: TextStyle(
+                                  color: Colors.black54,
 
-                                fontSize: 15.sp,
+                                  fontSize: 15.sp,
 
-                                fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
 
-                            TextSpan(
-                              text: controller.otpCode,
+                              TextSpan(
+                                text: controller.otpCode.value,
 
-                              style: TextStyle(
-                                color: const Color(0xFF2F66F6),
+                                style: TextStyle(
+                                  color: const Color(0xFF2F66F6),
 
-                                fontSize: 15.sp,
+                                  fontSize: 15.sp,
 
-                                fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w800,
 
-                                letterSpacing: 3,
+                                  letterSpacing: 3,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
+                            ],
+                          ),
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -244,64 +246,49 @@ class OtpPage extends GetView<OtpController> {
                 SizedBox(height: 30.h),
 
                 /// BUTTON
-                Obx(() {
-                  return GestureDetector(
-                    onTap: controller.isLoading.value
-                        ? null
-                        : controller.verifyOtp,
+                GestureDetector(
+                  onTap: controller.verifyOtp,
 
-                    child: Container(
-                      width: 250.w,
+                  child: Container(
+                    width: 250.w,
 
-                      height: 58.h,
+                    height: 58.h,
 
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18.r),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.r),
 
-                        gradient: const LinearGradient(
-                          begin: Alignment.centerLeft,
+                      gradient: const LinearGradient(
+                        begin: Alignment.centerLeft,
 
-                          end: Alignment.centerRight,
+                        end: Alignment.centerRight,
 
-                          colors: [Color(0xFF2F66F6), Color(0xFF001A9F)],
-                        ),
-
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF2F66F6).withOpacity(0.25),
-
-                            blurRadius: 18,
-
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
+                        colors: [Color(0xFF2F66F6), Color(0xFF001A9F)],
                       ),
 
-                      child: Center(
-                        child: controller.isLoading.value
-                            ? SizedBox(
-                                width: 24.w,
-                                height: 24.w,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF2F66F6).withOpacity(0.25),
 
-                                child: const CircularProgressIndicator(
-                                  color: Colors.white,
+                          blurRadius: 18,
 
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(
-                                "Verify OTP",
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
 
-                                style: CustomTextTheme.bold(
-                                  color: Colors.white,
+                    child: Center(
+                      child: Text(
+                        "Verify OTP",
 
-                                  fontSize: 17.sp,
-                                ),
-                              ),
+                        style: CustomTextTheme.bold(
+                          color: Colors.white,
+
+                          fontSize: 17.sp,
+                        ),
                       ),
                     ),
-                  );
-                }),
+                  ),
+                ),
 
                 SizedBox(height: 80.h),
               ],

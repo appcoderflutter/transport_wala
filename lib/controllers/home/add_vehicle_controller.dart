@@ -9,6 +9,7 @@ import '../../helpers/toaster.dart';
 import '../../model/max_capacity_model.dart';
 import '../../network_call/apis/apis_endpoint.dart';
 import '../../network_call/dio_helper/dio_helper.dart';
+import '../../routes/app_routes.dart';
 import 'home_controller.dart';
 
 class AddVehicleController extends GetxController {
@@ -106,17 +107,11 @@ class AddVehicleController extends GetxController {
       String base64Image = "";
 
       if (selectedImage.value != null) {
+        final bytes = await selectedImage.value!.readAsBytes();
 
-        final bytes =
-        await selectedImage
-            .value!
-            .readAsBytes();
+        final imageBase64 = base64Encode(bytes);
 
-        final imageBase64 =
-        base64Encode(bytes);
-
-        base64Image =
-        "data:image/jpeg;base64,$imageBase64";
+        base64Image = "data:image/jpeg;base64,$imageBase64";
       }
 
       await DioHelper.builder()
@@ -162,7 +157,7 @@ class AddVehicleController extends GetxController {
 
               /// GO BACK
 
-              Get.back();
+              Get.offAllNamed(AppRoutes.homePage);
             },
 
             onFailure: (message, {code}) {
@@ -232,4 +227,3 @@ class AddVehicleController extends GetxController {
     super.onClose();
   }
 }
-

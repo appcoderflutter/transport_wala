@@ -22,15 +22,11 @@ class ApiEndpoints {
   static final String getRouteList = '${baseUrl}getRouteList';
   static final String MaxCapacityList = '${baseUrl}MaxCapacityList';
   static final String saveVehicle = '${baseUrl}saveVehicle';
+  static final String updateVehicle = '${baseUrl}updateVehicle';
+  static String deleteVehicle(int vehicleId) => '${baseUrl}deleteVehicle?vehicleId=$vehicleId';
 
 
   //////////////////////////////// search ///////////////////////////////////
-
-
-  //////////////////////////////// Agency Search //////////////////////////////
-
-
-  ///////////////////////////////// Room ///////////////////////////////////
 
 
   ////////////////////////////////// Setting  //////////////////////////////
