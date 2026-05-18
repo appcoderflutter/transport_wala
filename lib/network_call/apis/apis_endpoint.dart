@@ -12,11 +12,12 @@ class ApiEndpoints {
 
 
   ///////////////////////////////// Profile ///////////////////////////////////
+  static final String uploadProfilePic = '${baseUrl}uploadProfilePic';
 
 
 
   ////////////////////////////////// Home ////////////////////////////////////
-  static final String getNotificationList = '${baseUrl}getNotificationList';
+  static String getNotificationList(int page) => '${baseUrl}getNotificationList?page=$page';
   static final String getNotificationCount = '${baseUrl}getNotificationCount';
   static String getVehicleList(int page) => '${baseUrl}getVehicleList?flag=GEN&page=$page';
   static final String getRouteList = '${baseUrl}getRouteList';

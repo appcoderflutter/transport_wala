@@ -85,36 +85,161 @@ class MyProfilePage extends GetView<ProfileController> {
 
                   SizedBox(height: 34.h),
 
+                  /// =========================
                   /// PROFILE IMAGE
-                  Container(
-                    width: 105.w,
-                    height: 105.w,
+                  /// =========================
+                  Stack(
+                    clipBehavior: Clip.none,
 
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                    children: [
+                      /// IMAGE
+                      GestureDetector(
+                        onTap: () {
+                          if (controller.hasImage) {
+                            Get.dialog(
+                              Dialog(
+                                backgroundColor: Colors.black,
 
-                      color: Colors.white,
+                                insetPadding: EdgeInsets.all(14.w),
 
-                      border: Border.all(color: Colors.white, width: 3),
+                                child: InteractiveViewer(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(22.r),
 
-                      image: controller.hasImage
-                          ? DecorationImage(
-                              image: NetworkImage(user!.profilePic!),
+                                    child: Image.network(
+                                      user!.profilePic!,
 
-                              fit: BoxFit.cover,
-                            )
-                          : null,
-                    ),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
 
-                    child: !controller.hasImage
-                        ? Icon(
-                            Icons.person_rounded,
+                        child: Container(
+                          width: 112.w,
+                          height: 112.w,
 
-                            size: 52.sp,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
 
-                            color: const Color(0xFF2F66F6),
-                          )
-                        : null,
+                            color: Colors.white,
+
+                            border: Border.all(color: Colors.white, width: 3),
+
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(.18),
+
+                                blurRadius: 22,
+
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+
+                            image: controller.hasImage
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                      "${user!.profilePic!}?t=${DateTime.now().millisecondsSinceEpoch}",
+                                    ),
+
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                          ),
+
+                          child: controller.hasImage
+                              ? null
+                              : Icon(
+                                  Icons.person_rounded,
+
+                                  size: 54.sp,
+
+                                  color: const Color(0xFF2F66F6),
+                                ),
+                        ),
+                      ),
+
+                      /// =========================
+                      /// LOADER
+                      /// =========================
+                      if (controller.isUploading.value)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(.45),
+
+                              shape: BoxShape.circle,
+                            ),
+
+                            child: Center(
+                              child: SizedBox(
+                                width: 26.w,
+                                height: 26.w,
+
+                                child: const CircularProgressIndicator(
+                                  color: Colors.white,
+
+                                  strokeWidth: 2.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      /// =========================
+                      /// EDIT BUTTON
+                      /// =========================
+                      Positioned(
+                        right: -2,
+                        bottom: -2,
+
+                        child: GestureDetector(
+                          onTap: () {
+                            if (!controller.isUploading.value) {
+                              controller.pickProfileImage();
+                            }
+                          },
+
+                          child: Container(
+                            width: 38.w,
+                            height: 38.w,
+
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF2F66F6), Color(0xFF001A9F)],
+                              ),
+
+                              shape: BoxShape.circle,
+
+                              border: Border.all(color: Colors.white, width: 2),
+
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF2F66F6,
+                                  ).withOpacity(.35),
+
+                                  blurRadius: 14,
+
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+
+                            child: Icon(
+                              Icons.camera_alt_rounded,
+
+                              color: Colors.white,
+
+                              size: 18.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   SizedBox(height: 20.h),
@@ -193,7 +318,6 @@ class MyProfilePage extends GetView<ProfileController> {
                       child: Column(
                         children: [
                           _infoTile(
-
                             icon: Icons.email_outlined,
 
                             title: "Email",
@@ -201,14 +325,12 @@ class MyProfilePage extends GetView<ProfileController> {
                             value: controller.email,
 
                             isVerified:
-                            controller.user.value
-                                ?.isEmailVerified == "1",
+                                controller.user.value?.isEmailVerified == "1",
                           ),
 
                           SizedBox(height: 24.h),
 
                           _infoTile(
-
                             icon: Icons.phone_outlined,
 
                             title: "Phone",
@@ -216,8 +338,7 @@ class MyProfilePage extends GetView<ProfileController> {
                             value: controller.phone,
 
                             isVerified:
-                            controller.user.value
-                                ?.isPhoneVerified == "1",
+                                controller.user.value?.isPhoneVerified == "1",
                           ),
                         ],
                       ),
@@ -316,7 +437,6 @@ class MyProfilePage extends GetView<ProfileController> {
   }
 
   Widget _infoTile({
-
     required IconData icon,
 
     required String title,
@@ -325,13 +445,10 @@ class MyProfilePage extends GetView<ProfileController> {
 
     bool isVerified = false,
   }) {
-
     return Row(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
 
       children: [
-
         Container(
           width: 48.w,
           height: 48.w,
@@ -339,28 +456,19 @@ class MyProfilePage extends GetView<ProfileController> {
           decoration: BoxDecoration(
             color: const Color(0xFFEEF3FF),
 
-            borderRadius:
-            BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(14.r),
           ),
 
-          child: Icon(
-            icon,
-
-            color: const Color(0xFF2F66F6),
-
-            size: 24.sp,
-          ),
+          child: Icon(icon, color: const Color(0xFF2F66F6), size: 24.sp),
         ),
 
         SizedBox(width: 16.w),
 
         Expanded(
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-
               Text(
                 title,
 
@@ -375,13 +483,11 @@ class MyProfilePage extends GetView<ProfileController> {
 
               Row(
                 children: [
-
                   Expanded(
                     child: Text(
                       value,
 
                       style: CustomTextTheme.bold(
-
                         color: Colors.black87,
 
                         fontSize: 16.sp,
@@ -390,29 +496,22 @@ class MyProfilePage extends GetView<ProfileController> {
                   ),
 
                   if (isVerified)
-
                     Container(
-
                       padding: EdgeInsets.symmetric(
                         horizontal: 8.w,
                         vertical: 4.h,
                       ),
 
                       decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.12),
 
-                        color: Colors.green
-                            .withOpacity(0.12),
-
-                        borderRadius:
-                        BorderRadius.circular(20.r),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
 
                       child: Row(
-                        mainAxisSize:
-                        MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.min,
 
                         children: [
-
                           Icon(
                             Icons.verified_rounded,
 
@@ -431,8 +530,7 @@ class MyProfilePage extends GetView<ProfileController> {
 
                               fontSize: 11.sp,
 
-                              fontWeight:
-                              FontWeight.w600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],

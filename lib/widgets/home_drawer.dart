@@ -158,7 +158,21 @@ class HomeDrawer extends StatelessWidget {
               SizedBox(height: 30.h),
 
               /// MENU
-              _DrawerItem(icon: Icons.description_outlined, title: "KYC"),
+              _DrawerItem(
+
+                icon: Icons.description_outlined,
+
+                title: "KYC",
+
+                onTap: () {
+
+                  Get.back();
+
+                  Get.toNamed(
+                    AppRoutes.kycPage,
+                  );
+                },
+              ),
 
               SizedBox(height: 24.h),
 

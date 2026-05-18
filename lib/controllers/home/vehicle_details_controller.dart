@@ -257,7 +257,6 @@ class VehicleDetailsController extends GetxController {
   Future<void> deleteVehicle() async {
     try {
       isDeleteLoading.value = true;
-
       Get.dialog(
         const Center(child: CircularProgressIndicator()),
 
